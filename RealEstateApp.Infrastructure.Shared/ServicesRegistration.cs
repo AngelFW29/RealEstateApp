@@ -1,6 +1,6 @@
 ﻿namespace RealEstateApp.Infrastructure.Shared
 {
-    public static class ServicesRegistration
+    internal class ServicesRegistration
     {
     }
 }

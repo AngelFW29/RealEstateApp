@@ -1,15 +1,15 @@
 <Solution>
   <Folder Name="/Core/">
-    <Project Path="Application/RealEstateApp.Core.Application.csproj" />
-    <Project Path="Domain/RealEstateApp.Core.Domain.csproj" />
+    <Project Path="RealEstateApp.Core.Application/RealEstateApp.Core.Application.csproj" />
+    <Project Path="RealEstateApp.Core.Domain/RealEstateApp.Core.Domain.csproj" />
   </Folder>
   <Folder Name="/IFileService/" />
   <Folder Name="/IFileService/Mappings/" />
   <Folder Name="/IFileService/Services/" />
   <Folder Name="/Infrastructure/">
-    <Project Path="Identity/RealEstateApp.Infrastructure.Identity.csproj" />
-    <Project Path="Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />
-    <Project Path="Shared/RealEstateApp.Infrastructure.Shared.csproj" />
+    <Project Path="RealEstateApp.Infrastructure.Identity/RealEstateApp.Infrastructure.Identity.csproj" />
+    <Project Path="RealEstateApp.Infrastructure.Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />
+    <Project Path="RealEstateApp.Infrastructure.Shared/RealEstateApp.Infrastructure.Shared.csproj" />
   </Folder>
   <Folder Name="/Presentation/" />
   <Folder Name="/Presentation/WebApi/">
