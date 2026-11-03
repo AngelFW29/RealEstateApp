@@ -1,7 +1,7 @@
-﻿using Domain.Common;
-using Domain.Enums;
+﻿using RealEstateApp.Core.Domain;
+using RealEstateApp.Core.Domain.Common.Enums;
 
-namespace Domain.Entities
+namespace RealEstateApp.Core.Domain.Entities
 {
     public class Propiedad : BaseEntity
     {
@@ -17,12 +17,14 @@ namespace Domain.Entities
         public EstadoPropiedad Estado { get; set; } = EstadoPropiedad.Disponible;
         public DateTime FechaCreacion { get; set; }
 
+        /*
         public TipoPropiedad TipoPropiedad { get; set; } = default!;
-        public TipoVenta TipoVenta { get; set; } = default!;
+        //public TipoVenta TipoVenta { get; set; } = default!;
         public ICollection<PropiedadImagen> Imagenes { get; set; } = new List<PropiedadImagen>();
         public ICollection<PropiedadMejora> Mejoras { get; set; } = new List<PropiedadMejora>();
         public ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
         public ICollection<Oferta> Ofertas { get; set; } = new List<Oferta>();
         public ICollection<Mensaje> Mensajes { get; set; } = new List<Mensaje>();
+        */
     }
 }

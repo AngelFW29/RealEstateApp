@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Identity
+namespace RealEstateApp.Infrastructure.Identity
 {
-    internal class ServiceRegistration
+    public static class ServiceRegistration
     {
+        public static void AddIdentityLayerIocForWebApp(this IServiceCollection services, IConfiguration config) {}
+        public static void AddIdentityLayerIocForWebApi(this IServiceCollection services, IConfiguration config) { }
+        public static async Task IdentitySeedAsync(this IServiceCollection services) { }
     }
 }

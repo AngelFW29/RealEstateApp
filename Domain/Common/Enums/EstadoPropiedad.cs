@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums
+﻿namespace RealEstateApp.Core.Domain.Common.Enums
 {
     public enum EstadoPropiedad { 
         Disponible = 1, 

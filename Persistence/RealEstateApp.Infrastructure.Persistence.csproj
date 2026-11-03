@@ -8,12 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contexts\" />
-    <Folder Include="Configurations\" />
+    <Folder Include="EntityConfigurations\" />
     <Folder Include="Seeds\" />
     <Folder Include="Repositories\" />
   </ItemGroup>

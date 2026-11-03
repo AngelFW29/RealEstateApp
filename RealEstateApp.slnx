@@ -1,18 +1,21 @@
 <Solution>
   <Folder Name="/Core/">
-    <Project Path="Application/Application.csproj" />
-    <Project Path="Domain/Domain.csproj" />
+    <Project Path="Application/RealEstateApp.Core.Application.csproj" />
+    <Project Path="Domain/RealEstateApp.Core.Domain.csproj" />
   </Folder>
   <Folder Name="/IFileService/" />
   <Folder Name="/IFileService/Mappings/" />
   <Folder Name="/IFileService/Services/" />
   <Folder Name="/Infrastructure/">
-    <Project Path="Identity/Identity.csproj" />
-    <Project Path="Persistence/Persistence.csproj" />
-    <Project Path="Shared/Shared.csproj" />
+    <Project Path="Identity/RealEstateApp.Infrastructure.Identity.csproj" />
+    <Project Path="Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />
+    <Project Path="Shared/RealEstateApp.Infrastructure.Shared.csproj" />
   </Folder>
-  <Folder Name="/Presentation/">
+  <Folder Name="/Presentation/" />
+  <Folder Name="/Presentation/WebApi/">
     <Project Path="RealEstateApi/RealEstateApi.csproj" />
+  </Folder>
+  <Folder Name="/Presentation/WebApp/">
     <Project Path="RealEstateApp/RealEstateApp.csproj" />
   </Folder>
 </Solution>

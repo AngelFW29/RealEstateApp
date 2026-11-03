@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces
+﻿namespace RealEstateApp.Core.Domain.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {

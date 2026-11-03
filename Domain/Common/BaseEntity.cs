@@ -1,4 +1,4 @@
-﻿namespace Domain.Common
+﻿namespace RealEstateApp.Core.Domain
 {
     public abstract class BaseEntity { 
         public int Id { get; set; } 

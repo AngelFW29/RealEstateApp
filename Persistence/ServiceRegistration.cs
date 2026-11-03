@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Persistence
+﻿namespace RealEstateApp.Infrastructure.Persistence
 {
-    internal class ServiceRegistration
+    public static class ServiceRegistration
     {
     }
 }
