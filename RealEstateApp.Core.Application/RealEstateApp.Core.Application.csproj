@@ -15,4 +15,8 @@
 		<PackageReference Include="AutoMapper" Version="16.2.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\RealEstateApp.Core.Domain\RealEstateApp.Core.Domain.csproj" />
+	</ItemGroup>
+
 </Project>
