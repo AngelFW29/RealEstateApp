@@ -1,0 +1,30 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Únete a la app";
+}
+<div class="container mt-5" style="max-width: 600px;">
+    <form asp-action="Register" method="post" enctype="multipart/form-data" class="card shadow-sm p-4">
+        <h3 class="text-center mb-3">Registro</h3>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-6 mb-3"><label>Nombre</label><input asp-for="FirstName" class="form-control" /></div>
+            <div class="col-md-6 mb-3"><label>Apellido</label><input asp-for="LastName" class="form-control" /></div>
+        </div>
+        <div class="mb-3"><label>Teléfono</label><input asp-for="Phone" class="form-control" /></div>
+        <div class="mb-3"><label>Foto de Perfil</label><input asp-for="Photo" type="file" accept=".jpg,.jpeg,.png" class="form-control" /></div>
+        <div class="mb-3"><label>Nombre de Usuario</label><input asp-for="UserName" class="form-control" /></div>
+        <div class="mb-3"><label>Correo Electrónico</label><input asp-for="Email" class="form-control" /></div>
+        <div class="row">
+            <div class="col-md-6 mb-3"><label>Contraseña</label><input asp-for="Password" type="password" class="form-control" /></div>
+            <div class="col-md-6 mb-3"><label>Confirmar</label><input asp-for="ConfirmPassword" type="password" class="form-control" /></div>
+        </div>
+        <div class="mb-3">
+            <label>Tipo de Usuario</label>
+            <select asp-for="UserType" class="form-select">
+                <option value="Cliente">Cliente</option>
+                <option value="Agente">Agente</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+    </form>
+</div>
