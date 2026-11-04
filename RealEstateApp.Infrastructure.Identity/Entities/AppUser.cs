@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNet.Identity.CoreCompat;
+using Microsoft.AspNetCore.Identity;
 
 namespace RealEstateApp.Infrastructure.Identity.Entities
 {
     public class AppUser : IdentityUser
     {
-        public string Nombre { get; set; } = default!;
-        public string Apellido { get; set; } = default!;
-        public string? Telefono { get; set; }
-        public string? FotoUrl { get; set; }
-        public string? Cedula { get; set; }
-        public bool Activo { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? IdCard { get; set; }
+        public string? PhotoPath { get; set; }
+        public bool IsActive { get; set; }
     }
 }

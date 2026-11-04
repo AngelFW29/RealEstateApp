@@ -1,0 +1,19 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+<div class="container mt-5" style="max-width: 400px;">
+    <form asp-action="Login" method="post" class="card shadow-sm p-4">
+        <h3 class="text-center mb-3">Iniciar Sesión</h3>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <label>Correo o usuario</label>
+            <input asp-for="UserNameOrEmail" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label>Contraseña</label>
+            <input asp-for="Password" class="form-control" type="password" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+    </form>
+</div>

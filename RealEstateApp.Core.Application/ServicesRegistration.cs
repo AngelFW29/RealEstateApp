@@ -2,8 +2,11 @@
 
 namespace RealEstateApp.Core.Application
 {
-    public static class ServicesRegistration
+    public static class ServiceRegistration
     {
-        public static void AddApplicationLayerIoc(this IServiceCollection services) { }
+        public static void AddApplicationLayer(this IServiceCollection services)
+        {
+ 
+        }
     }
 }
