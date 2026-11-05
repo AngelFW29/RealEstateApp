@@ -25,7 +25,8 @@ namespace RealEstateApp.Core.Application.ViewModels.Property
         [Display(Name = "Baños")]
         [Range(0, int.MaxValue, ErrorMessage = "La cantidad de baños no puede ser menor que cero.")]
         public int? Bathrooms { get; set; }
-
+        public bool HasFilters => PropertyTypeId.HasValue || MinPrice.HasValue || MaxPrice.HasValue
+                          || Bedrooms.HasValue || Bathrooms.HasValue;
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (MinPrice > MaxPrice)
