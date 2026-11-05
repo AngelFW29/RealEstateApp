@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RealEstateApp.Core.Domain.Common;
 using RealEstateApp.Core.Domain.Interfaces;
 using RealEstateApp.Infrastructure.Persistence.Contexts;
 using System.Linq.Expressions;
 
 namespace RealEstateApp.Infrastructure.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity>
+        where TEntity : BasicEntity<int>
     {
         protected readonly RealEstateAppContext _context;
 
@@ -14,50 +16,46 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
-            return await _context.Set<T>().FindAsync(id);
-        }
-
-        public async Task<List<T>> GetAllAsync()
-        {
-            return await _context.Set<T>().ToListAsync();
-        }
-
-        public IQueryable<T> Query(Expression<Func<T, bool>>? filter = null, params string[] includes)
-        {
-            IQueryable<T> query = _context.Set<T>();
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            return query;
-        }
-
-        public async Task<T> AddAsync(T entity)
-        {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
-
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(TEntity entity)
         {
-            _context.Set<T>().Update(entity);
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-
-        public async Task DeleteAsync(T entity)
+        public async Task DeleteAsync(TEntity entity)
         {
-            _context.Set<T>().Remove(entity);
+            _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
         }
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null)
+        {
+            return await BuildQuery(filter).CountAsync();
+        }
+        public async Task<TEntity?> GetByIdAsync(int id, params string[] includes)
+        {
+            return await BuildQuery(e => e.Id == id, includes).FirstOrDefaultAsync();
+        }
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null, params string[] includes)
+        {
+            return await BuildQuery(filter, includes).ToListAsync();
+        }
+
+        #region Private method
+        private IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>>? filter, params string[] includes)
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return filter is null ? query : query.Where(filter);
+        }
+
+        #endregion
     }
 }
