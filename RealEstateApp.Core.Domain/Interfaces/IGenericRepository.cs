@@ -1,14 +1,16 @@
-﻿using System.Linq.Expressions;
+﻿using RealEstateApp.Core.Domain.Common;
+using System.Linq.Expressions;
 
 namespace RealEstateApp.Core.Domain.Interfaces
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<TEntity>
+        where TEntity : BasicEntity<int>
     {
-        Task<T?> GetByIdAsync(int id);
-        Task<List<T>> GetAllAsync();
-        IQueryable<T> Query(Expression<Func<T, bool>>? filter = null, params string[] includes);
-        Task<T> AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
+        Task<TEntity?> GetByIdAsync(int id, params string[] includes);
+        Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null, params string[] includes);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
+        Task DeleteAsync(TEntity entity);
     }
 }

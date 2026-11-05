@@ -3,9 +3,6 @@
     <Project Path="RealEstateApp.Core.Application/RealEstateApp.Core.Application.csproj" />
     <Project Path="RealEstateApp.Core.Domain/RealEstateApp.Core.Domain.csproj" />
   </Folder>
-  <Folder Name="/IFileService/" />
-  <Folder Name="/IFileService/Mappings/" />
-  <Folder Name="/IFileService/Services/" />
   <Folder Name="/Infrastructure/">
     <Project Path="RealEstateApp.Infrastructure.Identity/RealEstateApp.Infrastructure.Identity.csproj" />
     <Project Path="RealEstateApp.Infrastructure.Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />

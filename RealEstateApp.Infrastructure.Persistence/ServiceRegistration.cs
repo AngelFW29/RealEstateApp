@@ -22,7 +22,6 @@ namespace RealEstateApp.Infrastructure.Persistence
             var context = scope.ServiceProvider.GetRequiredService<Contexts.RealEstateAppContext>();
 
             await context.Database.MigrateAsync();
-
         }
     }
 }
