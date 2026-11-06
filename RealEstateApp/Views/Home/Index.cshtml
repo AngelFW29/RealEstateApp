@@ -1,8 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Propiedades disponibles";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2 class="mb-3">Propiedades disponibles</h2>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<partial name="~/Views/Shared/Components/_PropertyFilters.cshtml" model="Model.Filter" />
+
+@if (!string.IsNullOrEmpty(Model.EmptyMessage))
+{
+    <div class="alert alert-info">@Model.EmptyMessage</div>
+}
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var property in Model.Properties)
+    {
+        <div class="col">
+            <partial name="~/Views/Shared/Components/_PropertyCard.cshtml" model="property" />
+        </div>
+    }
 </div>

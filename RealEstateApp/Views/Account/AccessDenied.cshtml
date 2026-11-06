@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Acceso denegado";
+
+    // Detectamos el rol del usuario para enviarlo de vuelta a su Home correcto
+    var (controllerName, linkText) =
+        User.IsInRole("Cliente") ? ("ClientHome", "Ir a mi Home")
+        : User.IsInRole("Agente") ? ("AgentHome", "Ir a mi Home")
+        : User.IsInRole("Administrador") ? ("AdminHome", "Ir a mi Home")
+        : ("Home", "Ir al inicio");
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm mx-auto text-center border-danger" style="max-width: 550px;">
+        <div class="card-body p-5">
+            <h1 class="display-1 text-danger">🚫</h1>
+            <h3 class="mt-3 text-danger">Acceso denegado</h3>
+            <p class="text-muted mt-3">
+                No tiene permisos para acceder a esta sección. Su usuario no cuenta con el rol necesario para ver esta funcionalidad.
+            </p>
+            <a asp-controller="@controllerName" asp-action="Index" class="btn btn-primary mt-3">
+                @linkText
+            </a>
+        </div>
+    </div>
+</div>

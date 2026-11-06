@@ -1,0 +1,64 @@
+﻿@model PropertyFilterViewModel
+@{
+    var controllerName = ViewData["FilterController"] as string ?? "Home";
+    var actionName = ViewData["FilterAction"] as string ?? "Index";
+    var propertyTypes = ViewData["PropertyTypes"] as IEnumerable<SelectListItem>;
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" asp-controller="@controllerName" asp-action="@actionName" class="row g-2">
+            <div class="col-md-9">
+                <label asp-for="Code" class="form-label"></label>
+                <input asp-for="Code" class="form-control" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+            </div>
+        </form>
+
+        <hr />
+
+        <form method="get" asp-controller="@controllerName" asp-action="@actionName" class="row g-3">
+            @if (propertyTypes is not null)
+            {
+                <div class="col-md-4">
+                    <label asp-for="PropertyTypeId" class="form-label"></label>
+                    <select asp-for="PropertyTypeId" asp-items="propertyTypes" class="form-select">
+                        <option value="">Todos</option>
+                    </select>
+                    <span asp-validation-for="PropertyTypeId" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="col-md-2">
+                <label asp-for="MinPrice" class="form-label"></label>
+                <input asp-for="MinPrice" type="number" step="0.01" min="0" class="form-control" />
+                <span asp-validation-for="MinPrice" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="MaxPrice" class="form-label"></label>
+                <input asp-for="MaxPrice" type="number" step="0.01" min="0" class="form-control" />
+                <span asp-validation-for="MaxPrice" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="Bedrooms" class="form-label"></label>
+                <input asp-for="Bedrooms" type="number" min="0" class="form-control" />
+                <span asp-validation-for="Bedrooms" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="Bathrooms" class="form-label"></label>
+                <input asp-for="Bathrooms" type="number" min="0" class="form-control" />
+                <span asp-validation-for="Bathrooms" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-controller="@controllerName" asp-action="@actionName" class="btn btn-outline-secondary">Limpiar filtros</a>
+            </div>
+        </form>
+    </div>
+</div>

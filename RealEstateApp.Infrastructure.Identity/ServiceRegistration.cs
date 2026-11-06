@@ -40,6 +40,7 @@ namespace RealEstateApp.Infrastructure.Identity
                 opts.AccessDeniedPath = "/Account/AccessDenied";
             });
 
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IWebAccountService, AccountServiceForWebApp>();
         }
 
@@ -81,6 +82,7 @@ namespace RealEstateApp.Infrastructure.Identity
                 };
             });
 
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IApiAccountService, AccountServiceForWebApi>();
         }
 
