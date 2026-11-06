@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Configuración local con credenciales
 appsettings.Development.json
+
+# Imágenes de propiedades
+/RealEstateApp/wwwroot/images/

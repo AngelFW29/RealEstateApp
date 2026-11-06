@@ -10,13 +10,16 @@ using System.Linq.Expressions;
 namespace RealEstateApp.Core.Application.Services
 {
     public partial class PropertyService : GenericService<PropertyDto, Property>, IPropertyService
-    {      
+    {
         private readonly IGenericRepository<PropertyType> _propertyTypeRepository;
+        private readonly IUserService _userService;
 
-        public PropertyService(IGenericRepository<Property> repository, IGenericRepository<PropertyType> propertyTypeRepository,
+        public PropertyService(IGenericRepository<Property> repository,
+            IGenericRepository<PropertyType> propertyTypeRepository, IUserService userService,
             IMapper mapper) : base(repository, mapper)
         {
             _propertyTypeRepository = propertyTypeRepository;
+            _userService = userService;
         }
 
         public async Task<List<PropertyDto>> GetAvailableAsync(PropertyFilterDto filter)
@@ -26,15 +29,27 @@ namespace RealEstateApp.Core.Application.Services
             var properties = await _repository.GetAllAsync(
                 BuildFilter(filter, availableOnly: true, agentId: null), ListIncludes);
 
-            return ToOrderedDtos(properties);
+            var visible = await KeepActiveAgentsAsync(properties);
+            var dtos = ToOrderedDtos(visible);
+
+            await FillAgentDataAsync(dtos);
+            return dtos;
         }
         public async Task<PropertyDto?> GetAvailableByIdAsync(int id)
         {
             var property = await _repository.GetByIdAsync(id, DetailIncludes);
 
-            return property is null || property.Status != PropertyStatus.Available
-                ? null
-                : _mapper.Map<PropertyDto>(property);
+            if (property is null || property.Status != PropertyStatus.Available)
+                return null;
+
+            var visible = await KeepActiveAgentsAsync([property]);
+
+            if (visible.Count == 0) return null;
+
+            var dto = _mapper.Map<PropertyDto>(property);
+
+            await FillAgentDataAsync([dto]);
+            return dto;
         }
         public async Task<List<PropertyDto>> GetByAgentAsync(string agentId, PropertyFilterDto filter)
         {
@@ -57,6 +72,30 @@ namespace RealEstateApp.Core.Application.Services
 
             if (!exists)
                 throw new BusinessRuleException("El tipo de propiedad seleccionado no existe.");
+        }
+        private async Task<List<Property>> KeepActiveAgentsAsync(List<Property> properties)
+        {
+            var activeAgentIds = (await _userService.GetActiveAgentIdsAsync()).ToHashSet();
+
+            return properties.Where(p => activeAgentIds.Contains(p.AgentId)).ToList();
+        }
+        private async Task FillAgentDataAsync(List<PropertyDto> dtos)
+        {
+            if (dtos.Count == 0)
+                return;
+
+            var agents = await _userService.GetBasicInfoByIdsAsync(dtos.Select(d => d.AgentId).Distinct());
+
+            foreach (var dto in dtos)
+            {
+                if (!agents.TryGetValue(dto.AgentId, out var agent))
+                    continue;
+
+                dto.AgentName = agent.FullName;
+                dto.AgentPhone = agent.Phone;
+                dto.AgentEmail = agent.Email;
+                dto.AgentPhotoPath = agent.PhotoPath;
+            }
         }
         private static Expression<Func<Property, bool>> BuildFilter(PropertyFilterDto filter, bool availableOnly, string? agentId)
         {
@@ -81,7 +120,6 @@ namespace RealEstateApp.Core.Application.Services
 
             return _mapper.Map<List<PropertyDto>>(ordered);
         }
-
         private static readonly string[] ListIncludes = ["PropertyType", "SaleType", "Images"];
         private static readonly string[] DetailIncludes = ["PropertyType", "SaleType", "Images", "Improvements.Improvement"];
         #endregion
