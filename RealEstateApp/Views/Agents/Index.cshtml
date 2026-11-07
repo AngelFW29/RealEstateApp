@@ -1,0 +1,55 @@
+﻿@model AgentListViewModel
+@{
+	ViewData["Title"] = "Agentes";
+}
+
+<h2 class="mb-3">Agentes inmobiliarios</h2>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" asp-controller="Agents" asp-action="Index" class="row g-2">
+            <div class="col-md-7">
+                <label asp-for="SearchTerm" class="form-label"></label>
+                <input asp-for="SearchTerm" class="form-control" />
+            </div>
+            <div class="col-md-5 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                <a asp-controller="Agents" asp-action="Index" class="btn btn-outline-secondary">Limpiar búsqueda</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.EmptyMessage))
+{
+    <div class="alert alert-info">@Model.EmptyMessage</div>
+}
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+    @foreach (var agent in Model.Agents)
+    {
+        <div class="col">
+            <a asp-controller="Agents" asp-action="Properties" asp-route-id="@agent.Id" class="text-decoration-none text-reset">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-body">
+                        @if (string.IsNullOrEmpty(agent.PhotoPath))
+                        {
+                            <div class="bg-secondary rounded-circle mx-auto mb-3" style="width: 96px; height: 96px;"></div>
+                        }
+                        else
+                        {
+                            <img src="@agent.PhotoPath" class="rounded-circle mb-3" alt="Foto de @agent.FullName" style="width: 96px; height: 96px; object-fit: cover;" />
+                        }
+
+                        <h6 class="card-title mb-0">@agent.FullName</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
