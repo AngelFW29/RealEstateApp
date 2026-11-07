@@ -3,7 +3,8 @@
     ViewData["Title"] = $"Propiedad {Model.Code}";
 }
 
-<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-3">Volver</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-3"
+   onclick="if (document.referrer.startsWith(location.origin)) { history.back(); return false; }">Volver</a>
 
 <div class="row g-4">
     <div class="col-lg-7">

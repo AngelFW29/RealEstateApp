@@ -14,6 +14,7 @@ namespace RealEstateApp.Core.Application
 
             // Services IOC
             services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<IFavoriteService, FavoriteService>();
         }
     }
 }
