@@ -6,5 +6,11 @@ namespace RealEstateApp.Core.Domain.Interfaces
     {
         Task<List<string>> GetImagePathsByPropertyTypeIdAsync(int propertyTypeId, CancellationToken cancellationToken = default);
         Task<List<string>> GetImagePathsBySaleTypeIdAsync(int saleTypeId, CancellationToken cancellationToken = default);
+        Task<List<Property>> GetAvailableByAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        Task<Property?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default);
+        Task<bool> CodeExistsAsync(string code, CancellationToken cancellationToken = default);
+        Task<Property> CreateWithDetailsAsync(Property property, IEnumerable<int> improvementIds, IEnumerable<PropertyImage> images, CancellationToken cancellationToken = default);
+        Task UpdateWithDetailsAsync(Property property, IEnumerable<int> improvementIds, IEnumerable<int> imageIdsToRemove, IEnumerable<PropertyImage> newImages, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Property property, CancellationToken cancellationToken = default);
     }
 }

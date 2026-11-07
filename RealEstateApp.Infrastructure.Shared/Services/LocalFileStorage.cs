@@ -14,7 +14,21 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             var configuredPath = config["Storage:WebRootPath"] ?? "wwwroot";
             _webRoot = Path.GetFullPath(Path.Combine(env.ContentRootPath, configuredPath));
         }
+        
+        public async Task<string> SaveAsync(Stream stream, string fileName, string folder, CancellationToken cancellationToken = default)
+        {
+            var dir = Path.Combine(_webRoot, "uploads", folder.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(dir);
 
+            var name = $"{Guid.NewGuid():N}{Path.GetExtension(fileName).ToLowerInvariant()}";
+            var fullPath = Path.Combine(dir, name);
+
+            await using var fs = new FileStream(fullPath, FileMode.Create);
+            await stream.CopyToAsync(fs, cancellationToken);
+
+            return $"/uploads/{folder}/{name}".Replace("\\", "/");
+        }
+        
         public async Task<string> SaveAsync(IFormFile file, string folder)
         {
             var dir = Path.Combine(_webRoot, "uploads", folder.Replace('/', Path.DirectorySeparatorChar));

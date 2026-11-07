@@ -30,7 +30,7 @@ namespace RealEstateApp.Core.Application.Services
             return itemsWithCount.Select(x =>
             {
                 var vm = _mapper.Map<CatalogListViewModel>(x.Item);
-                vm.PropertyCount = x.Cantidad;
+                vm.PropertyCount = x.Count;
                 return vm;
             }).ToList();
         }
