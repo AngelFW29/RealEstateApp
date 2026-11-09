@@ -33,10 +33,9 @@ namespace RealEstateApp.Controllers
                 return View(model);
             }
 
-            model.EmptyMessage = BuildEmptyMessage(model);
+            model.EmptyMessage = model.Properties.Count == 0 ? filter.GetNoResultsMessage() : null;
             return View(model);
         }
-
         public async Task<IActionResult> Detail(int id)
         {
             var property = await _propertyService.GetAvailableByIdAsync(id);
@@ -48,18 +47,6 @@ namespace RealEstateApp.Controllers
             }
 
             return View(_mapper.Map<PropertyViewModel>(property));
-        }
-        private static string? BuildEmptyMessage(HomeViewModel model)
-        {
-            if (model.Properties.Count > 0)
-                return null;
-
-            if (!string.IsNullOrWhiteSpace(model.Filter.Code))
-                return "No se encontró ninguna propiedad disponible con el código ingresado.";
-
-            return model.Filter.HasFilters
-                ? "No se encontraron propiedades disponibles con los filtros seleccionados."
-                : null;
         }        
     }
 }

@@ -1,0 +1,132 @@
+﻿
+@model ClientPropertyDetailViewModel
+@{
+    ViewData["Title"] = $"Propiedad {Model.Property.Code}";
+}
+
+<a asp-controller="ClientHome" asp-action="Index" class="btn btn-outline-secondary mb-3"
+   onclick="if (document.referrer.startsWith(location.origin)) { history.back(); return false; }">Volver</a>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success">
+        @successMessage
+    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<partial name="~/Views/Shared/Components/_PropertyDetailContent.cshtml" model="Model.Property" />
+
+<hr class="my-4" />
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <h5>Conversación con el agente</h5>
+
+        <div class="border rounded p-3 mb-3" style="max-height: 320px; overflow-y: auto;">
+            @if (Model.Messages.Count == 0)
+            {
+                <p class="text-muted mb-0">Aún no hay mensajes en esta conversación.</p>
+            }
+
+            @foreach (var message in Model.Messages)
+            {
+                <div class="d-flex @(message.IsFromClient ? "justify-content-end" : "justify-content-start") mb-2">
+                    <div class="rounded p-2 @(message.IsFromClient ? "bg-primary text-white" : "bg-light border")" style="max-width: 80%;">
+                        <div class="small fw-bold">@message.SenderText</div>
+                        <div style="white-space: pre-line;">@message.Content</div>
+                        <div class="small opacity-75">@message.SentAt.ToLocalDisplay()</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <form method="post" asp-controller="ClientHome" asp-action="SendMessage" novalidate>
+            <input type="hidden" name="PropertyId" value="@Model.NewMessage.PropertyId" />
+            <div class="mb-2">
+                <label for="messageContent" class="form-label">Mensaje</label>
+                <textarea id="messageContent" name="Content" class="form-control" rows="3" maxlength="1000"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+        </form>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">Mis ofertas</h5>
+
+            @if (Model.CanSendOffer)
+            {
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#offerModal">Enviar nueva oferta</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-success" disabled>Enviar nueva oferta</button>
+            }
+        </div>
+
+        @if (!Model.CanSendOffer)
+        {
+            <div class="alert alert-warning">@Model.OfferBlockReason</div>
+        }
+
+        @if (Model.Offers.Count == 0)
+        {
+            <p class="text-muted">No ha realizado ofertas para esta propiedad.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Monto ofertado</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var offer in Model.Offers)
+                        {
+                            <tr>
+                                <td>@offer.CreatedAt.ToLocalDisplay()</td>
+                                <td>RD$ @offer.Amount.ToString("N2", CultureInfo.InvariantCulture)</td>
+                                <td><span class="badge @offer.Status.ToBadgeClass()">@offer.StatusText</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-controller="ClientHome" asp-action="SendOffer" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="offerModalLabel">Enviar nueva oferta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="PropertyId" value="@Model.NewOffer.PropertyId" />
+                    <label for="offerAmount" class="form-label">Monto ofertado (RD$)</label>
+                    <input id="offerAmount" name="Amount" type="number" step="0.01" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Enviar oferta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

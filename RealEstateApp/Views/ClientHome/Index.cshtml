@@ -1,3 +1,7 @@
-﻿@{ ViewData["Title"] = "Home del Cliente"; }
-<h2>Bienvenido, Cliente</h2>
-<p>Esta es una vista temporal para probar el login.</p>
+﻿@{
+	ViewData["Title"] = "Propiedades disponibles";
+	ViewData["FilterAction"] = "Index";
+}
+<h2 class="mb-3">Propiedades disponibles</h2>
+
+<partial name="~/Views/Shared/Components/_ClientPropertyList.cshtml" model="Model" />

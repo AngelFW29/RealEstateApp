@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealEstateApp.Core.Domain.Interfaces;
+using RealEstateApp.Infrastructure.Persistence.Repositories;
 
 namespace RealEstateApp.Infrastructure.Persistence
 {
@@ -14,6 +15,7 @@ namespace RealEstateApp.Infrastructure.Persistence
                     m => m.MigrationsAssembly(typeof(Contexts.RealEstateAppContext).Assembly.FullName)));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(Repositories.GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         public static async Task RunPersistenceSeedAsync(this IServiceProvider serviceProvider)

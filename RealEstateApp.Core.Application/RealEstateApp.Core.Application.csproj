@@ -16,4 +16,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\RealEstateApp.Core.Domain\RealEstateApp.Core.Domain.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="ViewModels\Client\" />
+	</ItemGroup>
 </Project>
