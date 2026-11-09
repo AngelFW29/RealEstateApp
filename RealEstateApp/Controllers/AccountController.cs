@@ -50,17 +50,29 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid) return View(vm);
 
-        var photoPath = await _fileStorage.SaveAsync(vm.Photo!, "users");
-        var origin = $"{Request.Scheme}://{Request.Host}";
-        var result = await _accountService.RegisterAsync(vm, photoPath, origin);
+        try
+        {
+            var photoPath = await _fileStorage.SaveAsync(vm.Photo!, "users");
+            var origin = $"{Request.Scheme}://{Request.Host}";
+            var result = await _accountService.RegisterAsync(vm, photoPath, origin);
 
-        if (!result.Success) { ModelState.AddModelError("", result.FirstError); return View(vm); }
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.FirstError);
+                return View(vm);
+            }
 
-        TempData["Success"] = vm.UserType == "Cliente"
-            ? "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario."
-            : "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario.";
+            TempData["Success"] = vm.UserType == "Cliente"
+                ? "Su cuenta ha sido creada correctamente. Revise su correo electrónico para activar su usuario."
+                : "Su cuenta de agente ha sido creada correctamente. Un administrador debe activar su usuario.";
 
-        return RedirectToAction(nameof(Login));
+            return RedirectToAction(nameof(Login));
+        }
+        catch
+        {
+            ModelState.AddModelError("", "No fue posible completar el registro. Intente nuevamente más tarde.");
+            return View(vm);
+        }
     }
 
     [HttpGet]

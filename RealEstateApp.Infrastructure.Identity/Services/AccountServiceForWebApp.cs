@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities; 
+using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using RealEstateApp.Core.Application; 
-using RealEstateApp.Core.Application.Interfaces; 
-using RealEstateApp.Core.Application.ViewModels; 
+using RealEstateApp.Core.Application;
+using RealEstateApp.Core.Application.Interfaces;
+using RealEstateApp.Core.Application.ViewModels;
 using RealEstateApp.Infrastructure.Identity.Entities;
 
 namespace RealEstateApp.Infrastructure.Identity.Services;
@@ -14,7 +14,10 @@ public class AccountServiceForWebApp : IWebAccountService
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IEmailService _emailService;
 
-    public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+    public AccountServiceForWebApp(
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager,
+        IEmailService emailService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -23,7 +26,9 @@ public class AccountServiceForWebApp : IWebAccountService
 
     public async Task<Result<string>> LoginAsync(LoginViewModel vm)
     {
-        var user = await _userManager.FindByEmailAsync(vm.UserNameOrEmail) ?? await _userManager.FindByNameAsync(vm.UserNameOrEmail);
+        var user = await _userManager.FindByEmailAsync(vm.UserNameOrEmail)
+                   ?? await _userManager.FindByNameAsync(vm.UserNameOrEmail);
+
         if (user == null || !await _userManager.CheckPasswordAsync(user, vm.Password))
             return Result<string>.Fail("Los datos de acceso son inválidos.");
 
@@ -43,34 +48,55 @@ public class AccountServiceForWebApp : IWebAccountService
 
     public async Task<Result> RegisterAsync(RegisterViewModel vm, string photoPath, string origin)
     {
-        if (vm.UserType != "Cliente" && vm.UserType != "Agente")
-            return Result.Fail("El tipo de usuario seleccionado debe ser Cliente o Agente.");
-
-        var user = new AppUser
+        try
         {
-            FirstName = vm.FirstName,
-            LastName = vm.LastName,
-            PhoneNumber = vm.Phone,
-            UserName = vm.UserName,
-            Email = vm.Email,
-            PhotoPath = photoPath,
-            IsActive = false, 
-            EmailConfirmed = false
-        };
+            if (vm.UserType != "Cliente" && vm.UserType != "Agente")
+                return Result.Fail("El tipo de usuario debe ser Cliente o Agente.");
 
-        var result = await _userManager.CreateAsync(user, vm.Password);
-        if (!result.Succeeded) return Result.Fail(result.Errors.Select(e => e.Description).ToArray());
+            var user = new AppUser
+            {
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+                PhoneNumber = vm.Phone,
+                UserName = vm.UserName,
+                Email = vm.Email,
+                PhotoPath = photoPath,
+                IsActive = false,
+                EmailConfirmed = false
+            };
 
-        await _userManager.AddToRoleAsync(user, vm.UserType!);
+            var createResult = await _userManager.CreateAsync(user, vm.Password);
+            if (!createResult.Succeeded)
+                return Result.Fail(createResult.Errors.Select(e => e.Description).ToArray());
 
-        if (vm.UserType == "Cliente")
-        {
-            var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(await _userManager.GenerateEmailConfirmationTokenAsync(user)));
-            var link = $"{origin}/Account/ConfirmEmail?userId={user.Id}&token={token}";
-            await _emailService.SendAsync(user.Email!, "Activación de cuenta en RealEstateApp",
-                $"<p>Hola {user.FirstName},</p><p>Para activar su usuario, haga clic aquí: <a href='{link}'>Activar cuenta</a></p>");
+            await _userManager.AddToRoleAsync(user, vm.UserType!);
+
+            if (vm.UserType == "Cliente")
+            {
+                try
+                {
+                    var token = WebEncoders.Base64UrlEncode(
+                        Encoding.UTF8.GetBytes(await _userManager.GenerateEmailConfirmationTokenAsync(user)));
+                    var link = $"{origin}/Account/ConfirmEmail?userId={user.Id}&token={token}";
+
+                    await _emailService.SendAsync(
+                        user.Email!,
+                        "Activación de cuenta en RealEstateApp",
+                        $"<p>Hola {user.FirstName},</p><p>Para activar su usuario, haga clic aquí: <a href='{link}'>Activar cuenta</a></p>");
+                }
+                catch
+                {
+                    // Si el correo falla, la cuenta se crea pero se notifica al usuario
+                    return Result.Fail("La cuenta fue creada pero el correo de activación falló. Contacte al administrador.");
+                }
+            }
+
+            return Result.Ok();
         }
-        return Result.Ok();
+        catch
+        {
+            return Result.Fail("No fue posible completar el registro. Intente nuevamente.");
+        }
     }
 
     public async Task<Result> ConfirmEmailAsync(string userId, string token)
@@ -84,7 +110,10 @@ public class AccountServiceForWebApp : IWebAccountService
             var result = await _userManager.ConfirmEmailAsync(user, decoded);
             if (!result.Succeeded) return Result.Fail("El enlace de activación no es válido o ya expiró.");
         }
-        catch { return Result.Fail("El enlace de activación no es válido."); }
+        catch
+        {
+            return Result.Fail("El enlace de activación no es válido.");
+        }
 
         user.IsActive = true;
         await _userManager.UpdateAsync(user);
