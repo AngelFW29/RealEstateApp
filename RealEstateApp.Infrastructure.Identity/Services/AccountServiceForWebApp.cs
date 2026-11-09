@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using System.Text;
 using RealEstateApp.Core.Application;
 using RealEstateApp.Core.Application.Interfaces;
@@ -13,15 +14,18 @@ public class AccountServiceForWebApp : IWebAccountService
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IEmailService _emailService;
+    private readonly ILogger<AccountServiceForWebApp> _logger;
 
     public AccountServiceForWebApp(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
-        IEmailService emailService)
+        IEmailService emailService,
+        ILogger<AccountServiceForWebApp> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailService = emailService;
+        _logger = logger;
     }
 
     public async Task<Result<string>> LoginAsync(LoginViewModel vm)
@@ -41,8 +45,11 @@ public class AccountServiceForWebApp : IWebAccountService
         if (roles.Contains("Desarrollador"))
             return Result<string>.Fail("No tiene permisos para acceder a la aplicación web. Su usuario solo puede utilizar la API.");
 
+        var role = roles.FirstOrDefault();
+        if (string.IsNullOrEmpty(role))
+            return Result<string>.Fail("El usuario no tiene un rol válido asignado. Contacte a un administrador.");
+
         await _signInManager.SignInAsync(user, isPersistent: false);
-        var role = roles.FirstOrDefault() ?? "Cliente";
         return Result<string>.Ok(role);
     }
 
@@ -52,6 +59,15 @@ public class AccountServiceForWebApp : IWebAccountService
         {
             if (vm.UserType != "Cliente" && vm.UserType != "Agente")
                 return Result.Fail("El tipo de usuario debe ser Cliente o Agente.");
+
+            // Validación de duplicados
+            var existingEmail = await _userManager.FindByEmailAsync(vm.Email);
+            if (existingEmail != null)
+                return Result.Fail("Ya existe un usuario registrado con este correo electrónico.");
+
+            var existingName = await _userManager.FindByNameAsync(vm.UserName);
+            if (existingName != null)
+                return Result.Fail("Ya existe un usuario registrado con este nombre de usuario.");
 
             var user = new AppUser
             {
@@ -67,7 +83,11 @@ public class AccountServiceForWebApp : IWebAccountService
 
             var createResult = await _userManager.CreateAsync(user, vm.Password);
             if (!createResult.Succeeded)
-                return Result.Fail(createResult.Errors.Select(e => e.Description).ToArray());
+            {
+                var errors = createResult.Errors.Select(e => e.Description).ToArray();
+                _logger.LogWarning("Error al crear usuario {Email}: {Errors}", vm.Email, string.Join(", ", errors));
+                return Result.Fail(errors);
+            }
 
             await _userManager.AddToRoleAsync(user, vm.UserType!);
 
@@ -83,18 +103,22 @@ public class AccountServiceForWebApp : IWebAccountService
                         user.Email!,
                         "Activación de cuenta en RealEstateApp",
                         $"<p>Hola {user.FirstName},</p><p>Para activar su usuario, haga clic aquí: <a href='{link}'>Activar cuenta</a></p>");
+
+                    _logger.LogInformation("Correo de activación enviado a {Email}", user.Email);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Si el correo falla, la cuenta se crea pero se notifica al usuario
-                    return Result.Fail("La cuenta fue creada pero el correo de activación falló. Contacte al administrador.");
+                    _logger.LogError(ex, "Error al enviar correo de activación a {Email}", user.Email);
+                    await _userManager.DeleteAsync(user);
+                    return Result.Fail("No fue posible enviar el correo de activación. Intente nuevamente más tarde.");
                 }
             }
 
             return Result.Ok();
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error inesperado en RegisterAsync para {Email}", vm.Email);
             return Result.Fail("No fue posible completar el registro. Intente nuevamente.");
         }
     }
@@ -110,13 +134,15 @@ public class AccountServiceForWebApp : IWebAccountService
             var result = await _userManager.ConfirmEmailAsync(user, decoded);
             if (!result.Succeeded) return Result.Fail("El enlace de activación no es válido o ya expiró.");
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al confirmar email del usuario {UserId}", userId);
             return Result.Fail("El enlace de activación no es válido.");
         }
 
         user.IsActive = true;
         await _userManager.UpdateAsync(user);
+        _logger.LogInformation("Usuario {UserId} activado correctamente", userId);
         return Result.Ok("Su cuenta fue activada correctamente. Ya puede iniciar sesión.");
     }
 
