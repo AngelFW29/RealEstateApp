@@ -10,10 +10,10 @@ namespace RealEstateApp.Core.Application.Services
 {
     public class ChatService : GenericService<ChatMessageDto, ChatMessage>, IChatService
     {
-        private readonly IGenericRepository<Property> _propertyRepository;
+        private readonly IPropertyRepository _propertyRepository;
         private readonly IUserService _userService;
-        public ChatService(IGenericRepository<ChatMessage> repository,
-            IGenericRepository<Property> propertyRepository, IUserService userService,
+        public ChatService(IChatMessageRepository repository,
+            IPropertyRepository propertyRepository, IUserService userService,
             IMapper mapper) : base(repository, mapper)
         {
             _propertyRepository = propertyRepository;

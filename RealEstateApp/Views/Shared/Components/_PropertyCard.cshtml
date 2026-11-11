@@ -4,50 +4,52 @@
 	var showFavorite = ViewData["ShowFavorite"] as bool? ?? false;
 }
 
-<div class="card h-100 shadow-sm">
+<div class="card h-100 property-card">
 	@if (string.IsNullOrEmpty(Model.MainImagePath))
 	{
-		<div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-			Sin imagen
+		<div class="property-card-image-placeholder">
+			<i class="bi bi-house"></i>
+			<span>Sin imagen</span>
 		</div>
 	}
 	else
 	{
-		<img src="@Model.MainImagePath" class="card-img-top" alt="Imagen de la propiedad @Model.Code" style="height: 200px; object-fit: cover;" />
+		<img src="@Model.MainImagePath" class="card-img-top property-card-image" alt="Imagen de la propiedad @Model.Code" />
 	}
 
-	<div class="card-body">
+	<div class="card-body property-card-body">
 		<div class="d-flex justify-content-between align-items-start mb-2">
-			<h5 class="card-title mb-0">@Model.PropertyTypeName</h5>
+			<h5 class="card-title property-card-title mb-0">@Model.PropertyTypeName</h5>
 			@if (Model.Status == PropertyStatus.Sold)
 			{
 				<span class="badge bg-danger">Vendida</span>
 			}
 		</div>
 
-		<p class="text-muted mb-1">Código: @Model.Code</p>
-		<p class="mb-1">@Model.SaleTypeName</p>
-		<p class="fw-bold fs-5 mb-2">RD$ @Model.Price.ToString("N2", CultureInfo.InvariantCulture)</p>
+		<p class="property-card-code mb-2">Código: @Model.Code</p>
+		<p class="property-card-sale mb-1">@Model.SaleTypeName</p>
+		<p class="property-card-price mb-3">RD$ @Model.Price.ToString("N2", CultureInfo.InvariantCulture)</p>
 
-		<ul class="list-inline mb-0 text-muted">
-			<li class="list-inline-item">@Model.Bedrooms hab.</li>
-			<li class="list-inline-item">@Model.Bathrooms baños</li>
-			<li class="list-inline-item">@Model.SizeInMeters.ToString("N2", CultureInfo.InvariantCulture) m²</li>
+		<ul class="list-inline property-card-features mb-0">
+			<li class="list-inline-item"><i class="bi bi-door-open"></i> @Model.Bedrooms hab.</li>
+			<li class="list-inline-item"><i class="bi bi-droplet"></i> @Model.Bathrooms baños</li>
+			<li class="list-inline-item"><i class="bi bi-rulers"></i> @Model.SizeInMeters.ToString("N2", CultureInfo.InvariantCulture) m²</li>
 		</ul>
 	</div>
 
-	<div class="card-footer bg-transparent border-0 d-flex gap-2">
-		<a asp-controller="@detailController" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-primary flex-grow-1">Ver detalle</a>
+	<div class="card-footer property-card-footer">
+		<a asp-controller="@detailController" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-primary property-card-detail-button flex-grow-1">
+			Ver detalle
+		</a>
 
 		@if (showFavorite)
 		{
-			<form asp-controller="ClientHome" asp-action="ToggleFavorite" method="post">
+			<form asp-controller="ClientHome" asp-action="ToggleFavorite" method="post" class="property-card-favorite-form">
 				<input type="hidden" name="propertyId" value="@Model.Id" />
 				<input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
 
-				<button type="submit" class="btn @(Model.IsFavorite ? "btn-danger" : "btn-outline-danger")">
-		            <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart") me-1"></i>
-					@(Model.IsFavorite ? "Quitar de favoritos" : " Agregar a favoritos")
+				<button type="submit" class="btn property-favorite-button @(Model.IsFavorite ? "btn-danger" : "btn-outline-danger")" title="@(Model.IsFavorite ? "Quitar de favoritos" : "Agregar a favoritos")">
+		            <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i>
 				</button>
 			</form>
 		}

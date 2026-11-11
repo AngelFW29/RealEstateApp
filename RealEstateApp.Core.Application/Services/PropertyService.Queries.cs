@@ -47,6 +47,16 @@ namespace RealEstateApp.Core.Application.Services
 
             return ToOrderedDtos(properties);
         }
+        public async Task<PropertyDto?> GetAgentPropertyByIdAsync(string agentId, int id)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(agentId);
+
+            var property = await _repository.GetByIdAsync(id, DetailIncludes);
+
+            return property is null || property.AgentId != agentId
+                ? null
+                : _mapper.Map<PropertyDto>(property);
+        }
 
         #region Private methods
         private async Task EnsurePropertyTypeExistsAsync(int? propertyTypeId)

@@ -9,6 +9,7 @@ namespace RealEstateApp.Core.Application.Mappings.DtosAndViewModels
         public ChatMessageDtoMappingProfile()
         {
             CreateMap<ChatMessageDto, ChatMessageViewModel>();
+            CreateMap<ConversationSummaryDto, ConversationSummaryViewModel>();
         }
     }
 }
