@@ -165,5 +165,59 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 throw;
             }
         }
+
+        // Additional methods for agent-specific operations
+        public async Task<Dictionary<string, int>> CountByAgentIdsAsync(IEnumerable<string> agentIds, CancellationToken cancellationToken = default)
+        {
+            var list = agentIds?.ToList() ?? [];
+            if (!list.Any()) return [];
+
+            return await _context.Properties
+                .Where(p => list.Contains(p.AgentId))
+                .GroupBy(p => p.AgentId)
+                .Select(g => new { AgentId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.AgentId, x => x.Count, cancellationToken);
+        }
+        public async Task<List<string>> GetImagePathsByAgentAsync(string agentId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Properties
+                .Where(p => p.AgentId == agentId)
+                .SelectMany(p => p.Images)
+                .Select(img => img.ImagePath)
+                .ToListAsync(cancellationToken);
+        }
+        public async Task DeleteByAgentAsync(string agentId, CancellationToken cancellationToken = default)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                // Eliminar mensajes de chat asociados al agente directamente si no están cubiertos por cascada de propiedad
+                var chatMessages = await _context.ChatMessages
+                    .Where(cm => cm.AgentId == agentId)
+                    .ToListAsync(cancellationToken);
+                if (chatMessages.Any())
+                {
+                    _context.ChatMessages.RemoveRange(chatMessages);
+                }
+
+                var agentProperties = await _context.Properties
+                    .Where(p => p.AgentId == agentId)
+                    .ToListAsync(cancellationToken);
+
+                if (agentProperties.Any())
+                {
+                    _context.Properties.RemoveRange(agentProperties);
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+        
     }
 }

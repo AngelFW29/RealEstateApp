@@ -1,0 +1,21 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Admin.ConfirmAgentActionViewModel;
+@{
+    ViewData["Title"] = Model.IsActive ? "Inactivar Agente" : "Activar Agente";
+}
+
+<div class="container mt-4">
+    <h2>@(Model.IsActive ? "Inactivar Agente" : "Activar Agente")</h2>
+    <hr />
+
+    <div class="alert alert-warning" role="alert">
+        ¿Está seguro que desea @(Model.IsActive ? "inactivar" : "activar") al agente <strong>@Model.FullName</strong>?
+    </div>
+
+    <form asp-action="ChangeStatusConfirmed" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn @(Model.IsActive ? "btn-warning" : "btn-success")">
+            @(Model.IsActive ? "Sí, inactivar" : "Sí, activar")
+        </button>
+    </form>
+</div>

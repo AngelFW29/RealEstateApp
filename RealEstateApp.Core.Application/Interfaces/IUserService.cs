@@ -8,5 +8,11 @@ namespace RealEstateApp.Core.Application.Interfaces
         Task<Dictionary<string, UserContactDto>> GetBasicInfoByIdsAsync(IEnumerable<string> ids);
         Task<List<AgentBasicDto>> GetActiveAgentsAsync(string? searchTerm = null);
         Task<List<string>> GetActiveAgentIdsAsync();
+
+        // Additional methods for user management
+        Task<List<UserSummaryDto>> GetUsersByRoleAsync(string role, CancellationToken cancellationToken = default);
+        Task<UserSummaryDto?> GetUserWithRoleAsync(string userId, string role, CancellationToken cancellationToken = default);
+        Task<Result> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken = default);
+        Task<Result> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
     }
 }

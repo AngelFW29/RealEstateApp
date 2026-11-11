@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +10,7 @@ using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Infrastructure.Identity.Contexts;
 using RealEstateApp.Infrastructure.Identity.Entities;
 using RealEstateApp.Infrastructure.Identity.Services;
+using System.Text;
 
 
 namespace RealEstateApp.Infrastructure.Identity
@@ -42,6 +43,36 @@ namespace RealEstateApp.Infrastructure.Identity
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IWebAccountService, AccountServiceForWebApp>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+
+                options.Events.OnValidatePrincipal = async context =>
+                {
+                    // Verificar si el Principal de la cookie es nulo
+                    if (context.Principal == null)
+                    {
+                        context.RejectPrincipal();
+                        return;
+                    }
+
+                    var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                    var user = await userManager.GetUserAsync(context.Principal);
+
+                    if (user == null || !user.IsActive)
+                    {
+                        context.RejectPrincipal();
+                        await context.HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+                    }
+                };
+            });
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                options.ValidationInterval = TimeSpan.FromMinutes(1);
+            });
         }
 
         public static void AddIdentityForWebApi(this IServiceCollection services, IConfiguration config)

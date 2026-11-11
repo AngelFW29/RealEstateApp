@@ -16,6 +16,7 @@ namespace RealEstateApp.Infrastructure.Persistence
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(Repositories.GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPropertyRepository, PropertyRepository>();
         }
 
         public static async Task RunPersistenceSeedAsync(this IServiceProvider serviceProvider)

@@ -82,5 +82,75 @@ namespace RealEstateApp.Infrastructure.Identity.Services
 
         private static string BuildFullName(AppUser user) =>
             $"{user.FirstName} {user.LastName}".Trim();
+
+        public async Task<List<UserSummaryDto>> GetUsersByRoleAsync(string role, CancellationToken cancellationToken = default)
+        {
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+            return usersInRole.Select(u => new UserSummaryDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email ?? string.Empty,
+                IsActive = u.IsActive
+            }).ToList();
+        }
+        public async Task<UserSummaryDto?> GetUserWithRoleAsync(string userId, string role, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return null;
+
+            bool isInRole = await _userManager.IsInRoleAsync(user, role);
+            if (!isInRole) return null;
+
+            return new UserSummaryDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email ?? string.Empty,
+                IsActive = user.IsActive
+            };
+        }
+        public async Task<Result> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result.Fail("El usuario seleccionado no existe.");
+            }
+
+            user.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return Result.Fail("No fue posible actualizar el estado del usuario.");
+            }
+
+            if (!isActive)
+            {
+                // Invalidar sesiones abiertas inmediatamente al inactivar
+                await _userManager.UpdateSecurityStampAsync(user);
+            }
+
+            return Result.Ok();
+        }
+        public async Task<Result> DeleteUserAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result.Fail("El usuario seleccionado no existe.");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return Result.Fail("No fue posible eliminar el usuario.");
+            }
+
+            return Result.Ok();
+        }
+
     }
 }
