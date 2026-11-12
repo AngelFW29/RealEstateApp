@@ -5,14 +5,17 @@ using RealEstateApp.Core.Application.Interfaces;
 namespace RealEstateApp.Controllers
 {
     [Authorize(Roles = "Administrador")]
+    [Route("[controller]")]
     public class AdminHomeController : Controller
     {
         private readonly IAgentManagementService _agentManagementService;
+
         public AdminHomeController(IAgentManagementService agentManagementService)
         {
             _agentManagementService = agentManagementService;
         }
-        [HttpGet("")]
+
+        [HttpGet]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var agents = await _agentManagementService.GetAllAsync(cancellationToken);
