@@ -1,0 +1,25 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Staff.EditStaffUserViewModel
+@{
+    bool willBeActive = !ViewBag.IsActive; // O maneja la lógica según el estado actual
+    string entityTypeName = ViewData["EntityTypeName"]?.ToString() ?? "usuario";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Cambiar Estado</h2>
+    <hr />
+
+    <div class="alert alert-warning" role="alert">
+        ¿Está seguro que desea @(ViewBag.TargetActiveState ? "activar" : "inactivar") este @entityTypeName (<strong>@Model.UserName</strong>)?
+    </div>
+
+    <form asp-action="ChangeStatusConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="isActive" value="@ViewBag.TargetActiveState.ToString().ToLower()" />
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn @(ViewBag.TargetActiveState ? "btn-success" : "btn-warning")">Aceptar</button>
+        </div>
+    </form>
+</div>

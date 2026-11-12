@@ -1,0 +1,55 @@
+﻿@model AgentConversationViewModel
+@{
+    ViewData["Title"] = $"Conversación con {Model.ClientName}";
+}
+
+<div class="agent-conversation-page">
+    <a asp-controller="AgentHome" asp-action="Detail" asp-route-id="@Model.PropertyId"
+       class="btn btn-outline-secondary agent-back-button mb-4">
+        <i class="bi bi-arrow-left"></i>
+        Volver a la propiedad
+    </a>
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger app-alert">
+            @errorMessage
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="agent-conversation-header">
+        <h4>@Model.ClientName</h4>
+        <p class="text-muted">Propiedad con código @Model.PropertyCode</p>
+    </div>
+
+    <section class="agent-conversation-panel">
+        <div class="agent-conversation-messages">
+            @foreach (var message in Model.Messages)
+            {
+                <div class="d-flex @(message.IsFromClient ? "justify-content-start" : "justify-content-end") mb-3">
+                    <div class="agent-message-bubble @(message.IsFromClient ? "agent-message-received" : "agent-message-sent")">
+                        <div class="small fw-bold">@message.SenderText</div>
+                        <div class="agent-message-content">@message.Content</div>
+                        <div class="small opacity-75">@message.SentAt.ToLocalDisplay()</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <form method="post" asp-controller="AgentHome" asp-action="SendReply" novalidate class="agent-reply-form">
+            <input type="hidden" name="PropertyId" value="@Model.Reply.PropertyId" />
+            <input type="hidden" name="ClientId" value="@Model.Reply.ClientId" />
+
+            <div class="mb-3">
+                <label for="replyContent" class="form-label">Mensaje</label>
+                <textarea id="replyContent" name="Content" class="form-control app-form-control" rows="3" maxlength="1000"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary app-primary-button">
+                <i class="bi bi-send"></i>
+                Enviar respuesta
+            </button>
+        </form>
+    </section>
+</div>

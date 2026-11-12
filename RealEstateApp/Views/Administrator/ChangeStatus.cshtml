@@ -1,0 +1,8 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Staff.EditStaffUserViewModel
+@{
+    ViewData["Title"] = "Cambiar Estado de Administrador";
+    ViewData["EntityTypeName"] = "administrador";
+    ViewBag.TargetActiveState = !Model.IsActive;
+}
+
+<partial name="_StaffChangeStatus" model="Model" />

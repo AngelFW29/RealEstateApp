@@ -43,6 +43,7 @@ namespace RealEstateApp.Infrastructure.Identity
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IWebAccountService, AccountServiceForWebApp>();
+            services.AddScoped<IAccountService, UserService>();
 
             services.ConfigureApplicationCookie(options =>
             {

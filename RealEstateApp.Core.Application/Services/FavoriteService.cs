@@ -11,7 +11,7 @@ namespace RealEstateApp.Core.Application.Services
     public class FavoriteService : GenericService<FavoriteDto, Favorite>, IFavoriteService
     {
         private readonly IPropertyService _propertyService;
-        public FavoriteService(IGenericRepository<Favorite> repository, IPropertyService propertyService,
+        public FavoriteService(IFavoriteRepository repository, IPropertyService propertyService,
             IMapper mapper) : base(repository, mapper)
         {
             _propertyService = propertyService;

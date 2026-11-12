@@ -3,7 +3,11 @@
 	ViewData["Title"] = $"Propiedad {Model.Code}";
 }
 
-<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-3"
-   onclick="if (document.referrer.startsWith(location.origin)) { history.back(); return false; }">Volver</a>
+<div class="property-detail-page">
+	<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary property-back-button mb-4"
+	   onclick="if (document.referrer.startsWith(location.origin)) { history.back(); return false; }">
+		<i class="bi bi-arrow-left"></i> Volver
+	</a>
 
-<partial name="~/Views/Shared/Components/_PropertyDetailContent.cshtml" model="Model" />
+	<partial name="~/Views/Shared/Components/_PropertyDetailContent.cshtml" model="Model" />
+</div>

@@ -1,99 +1,128 @@
 ﻿@model PropertyViewModel
+@{
+	var showAgent = ViewData["ShowAgent"] as bool? ?? true;
+}
+<div class="property-detail-content">
+	<div class="row g-4 align-items-start">
+		<div class="col-lg-7">
+			@if (Model.ImagePaths.Count == 0)
+			{
+				<div class="property-detail-image-placeholder">
+					<i class="bi bi-images"></i>
+					<span>Sin imágenes</span>
+				</div>
+			}
+			else
+			{
+				<div id="propertyCarousel" class="carousel slide property-detail-carousel" data-bs-ride="false">
+					<div class="carousel-inner property-detail-carousel-inner">
+						@for (var i = 0; i < Model.ImagePaths.Count; i++)
+						{
+							<div class="carousel-item @(i == 0 ? "active" : "")">
+								<img src="@Model.ImagePaths[i]" class="d-block w-100 property-detail-image" alt="Imagen @(i + 1) de la propiedad @Model.Code" />
+							</div>
+						}
+					</div>
 
-<div class="row g-4">
-	<div class="col-lg-7">
-		@if (Model.ImagePaths.Count == 0)
-		{
-			<div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="height: 360px;">
-				Sin imágenes
-			</div>
-		}
-		else
-		{
-			<div id="propertyCarousel" class="carousel slide" data-bs-ride="false">
-				<div class="carousel-inner rounded">
-					@for (var i = 0; i < Model.ImagePaths.Count; i++)
+					@if (Model.ImagePaths.Count > 1)
 					{
-						<div class="carousel-item @(i == 0 ? "active" : "")">
-							<img src="@Model.ImagePaths[i]" class="d-block w-100" alt="Imagen @(i + 1) de la propiedad @Model.Code" style="height: 360px; object-fit: cover;" />
+						<button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Anterior</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Siguiente</span>
+						</button>
+					}
+				</div>
+			}
+		</div>
+
+		<div class="col-lg-5">
+			<div class="property-detail-information">
+				<span class="section-eyebrow">DETALLES DE LA PROPIEDAD</span>
+				<h3 class="property-detail-title">@Model.PropertyTypeName</h3>
+				<p class="property-detail-code">Código: @Model.Code</p>
+				<p class="property-detail-sale">@Model.SaleTypeName</p>
+				<p class="property-detail-price">RD$ @Model.Price.ToString("N2", CultureInfo.InvariantCulture)</p>
+
+				<ul class="list-group property-detail-features mb-4">
+					<li class="list-group-item">
+						<i class="bi bi-door-open"></i>
+						<span>Habitaciones</span>
+						<strong>@Model.Bedrooms</strong>
+					</li>
+					<li class="list-group-item">
+						<i class="bi bi-droplet"></i>
+						<span>Baños</span>
+						<strong>@Model.Bathrooms</strong>
+					</li>
+					<li class="list-group-item">
+						<i class="bi bi-rulers"></i>
+						<span>Tamaño</span>
+						<strong>@Model.SizeInMeters.ToString("N2", CultureInfo.InvariantCulture) m²</strong>
+					</li>
+				</ul>
+
+				@if (showAgent)
+				{
+					<div class="card property-agent-card">
+						<div class="card-body d-flex gap-3 align-items-center">
+							@if (string.IsNullOrEmpty(Model.AgentPhotoPath))
+							{
+								<div class="property-agent-placeholder">
+									<i class="bi bi-person"></i>
+								</div>
+							}
+							else
+							{
+								<img src="@Model.AgentPhotoPath" class="property-agent-photo" alt="Foto del agente @Model.AgentName" />
+							}
+
+							<div class="property-agent-information">
+								<h6 class="mb-1">@Model.AgentName</h6>
+								@if (!string.IsNullOrEmpty(Model.AgentPhone))
+								{
+									<div class="text-muted small"><i class="bi bi-telephone"></i> Teléfono: @Model.AgentPhone</div>
+								}
+								@if (!string.IsNullOrEmpty(Model.AgentEmail))
+								{
+									<div class="text-muted small"><i class="bi bi-envelope"></i> Correo: @Model.AgentEmail</div>
+								}
+							</div>
 						</div>
-					}
-				</div>
-
-				@if (Model.ImagePaths.Count > 1)
-				{
-					<button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Anterior</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-						<span class="carousel-control-next-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Siguiente</span>
-					</button>
+					</div>
 				}
-			</div>
-		}
-	</div>
-
-	<div class="col-lg-5">
-		<h3>@Model.PropertyTypeName</h3>
-		<p class="text-muted mb-1">Código: @Model.Code</p>
-		<p class="mb-1">@Model.SaleTypeName</p>
-		<p class="fw-bold fs-4 mb-3">RD$ @Model.Price.ToString("N2", CultureInfo.InvariantCulture)</p>
-
-		<ul class="list-group list-group-flush mb-3">
-			<li class="list-group-item">Habitaciones: @Model.Bedrooms</li>
-			<li class="list-group-item">Baños: @Model.Bathrooms</li>
-			<li class="list-group-item">Tamaño: @Model.SizeInMeters.ToString("N2", CultureInfo.InvariantCulture) m²</li>
-		</ul>
-
-		<div class="card">
-			<div class="card-body d-flex gap-3 align-items-center">
-				@if (string.IsNullOrEmpty(Model.AgentPhotoPath))
-				{
-					<div class="bg-secondary rounded-circle flex-shrink-0" style="width: 64px; height: 64px;"></div>
-				}
-				else
-				{
-					<img src="@Model.AgentPhotoPath" class="rounded-circle flex-shrink-0" alt="Foto del agente @Model.AgentName" style="width: 64px; height: 64px; object-fit: cover;" />
-				}
-
-				<div>
-					<h6 class="mb-1">@Model.AgentName</h6>
-					@if (!string.IsNullOrEmpty(Model.AgentPhone))
-					{
-						<div class="text-muted small">Teléfono: @Model.AgentPhone</div>
-					}
-					@if (!string.IsNullOrEmpty(Model.AgentEmail))
-					{
-						<div class="text-muted small">Correo: @Model.AgentEmail</div>
-					}
-				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="row mt-4">
-	<div class="col-lg-7">
-		<h5>Descripción</h5>
-		<p style="white-space: pre-line;">@Model.Description</p>
-	</div>
+	<div class="row g-4 property-detail-extra">
+		<div class="col-lg-7">
+			<div class="property-detail-section">
+				<h5><i class="bi bi-card-text"></i> Descripción</h5>
+				<p class="property-description">@Model.Description</p>
+			</div>
+		</div>
 
-	<div class="col-lg-5">
-		<h5>Mejoras</h5>
-		@if (Model.ImprovementNames.Count == 0)
-		{
-			<p class="text-muted">Esta propiedad no tiene mejoras registradas.</p>
-		}
-		else
-		{
-			<ul>
-				@foreach (var improvement in Model.ImprovementNames)
+		<div class="col-lg-5">
+			<div class="property-detail-section">
+				<h5><i class="bi bi-stars"></i> Mejoras</h5>
+				@if (Model.ImprovementNames.Count == 0)
 				{
-					<li>@improvement</li>
+					<p class="text-muted">Esta propiedad no tiene mejoras registradas.</p>
 				}
-			</ul>
-		}
+				else
+				{
+					<ul class="property-improvements-list">
+						@foreach (var improvement in Model.ImprovementNames)
+						{
+							<li><i class="bi bi-check-circle"></i> @improvement</li>
+						}
+					</ul>
+				}
+			</div>
+		</div>
 	</div>
 </div>

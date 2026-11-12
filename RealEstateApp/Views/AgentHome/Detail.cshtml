@@ -1,0 +1,124 @@
+﻿@model AgentPropertyDetailViewModel
+@{
+    ViewData["Title"] = $"Propiedad {Model.Property.Code}";
+
+    var contentViewData = new ViewDataDictionary(ViewData)
+    {
+        ["ShowAgent"] = false
+    };
+}
+
+<div class="agent-property-detail-page">
+    <a asp-controller="AgentHome" asp-action="Index" class="btn btn-outline-secondary agent-back-button mb-4">
+        <i class="bi bi-arrow-left"></i>
+        Volver
+    </a>
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success app-alert">
+            @successMessage
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger app-alert">
+            @errorMessage
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="agent-property-status mb-3">
+        <span class="fw-bold">Estado:</span>
+        @if (Model.Property.Status == PropertyStatus.Sold)
+        {
+            <span class="badge bg-danger">Vendida</span>
+        }
+        else
+        {
+            <span class="badge bg-success">Disponible</span>
+        }
+    </div>
+
+    <partial name="~/Views/Shared/Components/_PropertyDetailContent.cshtml" model="Model.Property" view-data="contentViewData" />
+
+    <hr class="agent-detail-divider" />
+
+    <div class="row g-4 agent-detail-sections">
+        <div class="col-lg-6">
+            <section class="agent-detail-panel">
+                <div class="agent-detail-heading">
+                    <i class="bi bi-chat-dots"></i>
+                    <h5>Conversaciones con clientes</h5>
+                </div>
+
+                @if (Model.Conversations.Count == 0)
+                {
+                    <p class="text-muted mb-0">Aún no hay conversaciones para esta propiedad.</p>
+                }
+                else
+                {
+                    <div class="list-group agent-conversation-list">
+                        @foreach (var conversation in Model.Conversations)
+                        {
+                            <a asp-controller="AgentHome" asp-action="Conversation"
+                               asp-route-propertyId="@conversation.PropertyId" asp-route-clientId="@conversation.ClientId"
+                               class="list-group-item list-group-item-action agent-conversation-item">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <strong>@conversation.ClientName</strong>
+                                    <small class="text-muted text-nowrap">@conversation.LastMessageAt.ToLocalDisplay()</small>
+                                </div>
+                                <div class="text-muted small agent-conversation-preview">@conversation.LastMessagePreview</div>
+                            </a>
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+
+        <div class="col-lg-6">
+            <section class="agent-detail-panel">
+                <div class="agent-detail-heading">
+                    <i class="bi bi-receipt"></i>
+                    <h5>Ofertas recibidas</h5>
+                </div>
+
+                @if (Model.OfferSummaries.Count == 0)
+                {
+                    <p class="text-muted mb-0">Aún no hay ofertas para esta propiedad.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle agent-offers-table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Ofertas</th>
+                                    <th>Última oferta</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var summary in Model.OfferSummaries)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="AgentHome" asp-action="ClientOffers"
+                                               asp-route-propertyId="@summary.PropertyId" asp-route-clientId="@summary.ClientId">@summary.ClientName</a>
+                                        </td>
+                                        <td>@summary.OffersCount</td>
+                                        <td>RD$ @summary.LastOfferAmount.ToString("N2", CultureInfo.InvariantCulture)</td>
+                                        <td><span class="badge @summary.LastOfferStatus.ToBadgeClass()">@summary.LastOfferStatus.ToDisplayText()</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</div>

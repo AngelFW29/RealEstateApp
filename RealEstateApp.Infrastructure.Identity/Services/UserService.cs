@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Application;
+using RealEstateApp.Core.Application.Dtos;
 using RealEstateApp.Core.Application.Dtos.User;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Infrastructure.Identity.Entities;
 
 namespace RealEstateApp.Infrastructure.Identity.Services
 {
-    public class UserService : IUserService
+    public class UserService : IUserService, IAccountService
     {
         private readonly UserManager<AppUser> _userManager;
 
@@ -109,6 +110,7 @@ namespace RealEstateApp.Infrastructure.Identity.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email ?? string.Empty,
+                Cedula = user.IdCard,
                 IsActive = user.IsActive
             };
         }
@@ -151,6 +153,110 @@ namespace RealEstateApp.Infrastructure.Identity.Services
 
             return Result.Ok();
         }
+        #region IAccountService Members
+        public async Task<Result> CreateUserAsync(RegisterUserDto dto, string role, CancellationToken cancellationToken = default)
+        {
+            var user = new AppUser
+            {
+                FirstName = dto.FirstName.Trim(),
+                LastName = dto.LastName.Trim(),
+                IdCard = string.IsNullOrWhiteSpace(dto.IdCard) ? null : NormalizeCedula(dto.IdCard),
+                Email = dto.Email.Trim(),
+                UserName = dto.UserName.Trim(),
+                IsActive = true,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user, dto.Password);
+            if (!result.Succeeded)
+            {
+                return Result.Fail(result.Errors.Select(e => TranslateIdentityError(e)).ToArray());
+            }
+
+            await _userManager.AddToRoleAsync(user, role);
+            return Result.Ok();
+        }
+
+        public async Task<Result> UpdateUserAsync(UpdateUserDto dto, string role, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(dto.Id);
+            if (user == null || !await _userManager.IsInRoleAsync(user, role))
+            {
+                return Result.Fail("El usuario seleccionado no existe.");
+            }
+
+            user.FirstName = dto.FirstName.Trim();
+            user.LastName = dto.LastName.Trim();
+            user.IdCard = string.IsNullOrWhiteSpace(dto.Cedula) ? null : NormalizeCedula(dto.Cedula);
+
+            await _userManager.SetEmailAsync(user, dto.Email.Trim());
+            await _userManager.SetUserNameAsync(user, dto.UserName.Trim());
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return Result.Fail(updateResult.Errors.Select(e => TranslateIdentityError(e)).ToArray());
+            }
+
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passResult = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (!passResult.Succeeded)
+                {
+                    return Result.Fail(passResult.Errors.Select(e => TranslateIdentityError(e)).ToArray());
+                }
+                await _userManager.UpdateSecurityStampAsync(user);
+            }
+
+            return Result.Ok();
+        }
+
+        public async Task<bool> EmailExistsAsync(string email, string? excludeUserId = null, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByEmailAsync(email.Trim());
+            if (user == null) return false;
+            return user.Id != excludeUserId;
+        }
+
+        public async Task<bool> UserNameExistsAsync(string userName, string? excludeUserId = null, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByNameAsync(userName.Trim());
+            if (user == null) return false;
+            return user.Id != excludeUserId;
+        }
+
+        public async Task<bool> CedulaExistsAsync(string cedula, string? excludeUserId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(cedula)) return false;
+            string norm = NormalizeCedula(cedula);
+
+            var users = await _userManager.Users.Where(u => u.IdCard != null).ToListAsync(cancellationToken);
+            return users.Any(u => NormalizeCedula(u.IdCard!) == norm && u.Id != excludeUserId);
+        }
+
+        public async Task<int> CountActiveByRoleAsync(string role, CancellationToken cancellationToken = default)
+        {
+            var users = await _userManager.GetUsersInRoleAsync(role);
+            return users.Count(u => u.IsActive);
+        }
+
+        private string NormalizeCedula(string cedula)
+        {
+            return new string(cedula.Where(char.IsDigit).ToArray());
+        }
+
+        private string TranslateIdentityError(IdentityError error)
+        {
+            return error.Code switch
+            {
+                "DuplicateEmail" => "Ya existe un usuario registrado con este correo electrónico.",
+                "DuplicateUserName" => "Ya existe un usuario registrado con este nombre de usuario.",
+                "PasswordTooShort" => "La contraseña debe ser más larga.",
+                _ => error.Description
+            };
+        }
+        #endregion
 
     }
 }

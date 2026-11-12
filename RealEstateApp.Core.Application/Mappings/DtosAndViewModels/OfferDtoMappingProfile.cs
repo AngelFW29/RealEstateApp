@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using RealEstateApp.Core.Application.Dtos.Offer;
+using RealEstateApp.Core.Application.ViewModels.Chat;
 using RealEstateApp.Core.Application.ViewModels.Offer;
-using RealEstateApp.Core.Domain.Entities;
 
 namespace RealEstateApp.Core.Application.Mappings.EntitiesAndDtos
 {
@@ -10,6 +10,7 @@ namespace RealEstateApp.Core.Application.Mappings.EntitiesAndDtos
         public OfferDtoMappingProfile()
         {
             CreateMap<OfferDto, OfferViewModel>();
+            CreateMap<ClientOffersSummaryDto, ClientOffersSummaryViewModel>();
         }
     }
 }

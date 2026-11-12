@@ -1,0 +1,79 @@
+﻿@model AgentClientOffersViewModel
+@{
+    ViewData["Title"] = $"Ofertas de {Model.ClientName}";
+}
+
+<div class="agent-client-offers-page">
+    <a asp-controller="AgentHome" asp-action="Detail" asp-route-id="@Model.PropertyId"
+       class="btn btn-outline-secondary agent-back-button mb-4">
+        <i class="bi bi-arrow-left"></i>
+        Volver a la propiedad
+    </a>
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success app-alert">
+            @successMessage
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger app-alert">
+            @errorMessage
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="agent-offers-page-header">
+        <span class="section-eyebrow">GESTIÓN DE OFERTAS</span>
+        <h4>Ofertas de @Model.ClientName</h4>
+        <p class="text-muted">Propiedad con código @Model.PropertyCode</p>
+    </div>
+
+    <section class="agent-detail-panel">
+        <div class="table-responsive">
+            <table class="table align-middle agent-offers-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Monto ofertado</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offer in Model.Offers)
+                    {
+                        <tr>
+                            <td>@offer.CreatedAt.ToLocalDisplay()</td>
+                            <td>RD$ @offer.Amount.ToString("N2", CultureInfo.InvariantCulture)</td>
+                            <td><span class="badge @offer.Status.ToBadgeClass()">@offer.Status.ToDisplayText()</span></td>
+                            <td>
+                                @if (offer.Status == OfferStatus.Pending)
+                                {
+                                    <div class="agent-offer-actions">
+                                        <form method="post" asp-controller="AgentHome" asp-action="AcceptOffer">
+                                            <input type="hidden" name="propertyId" value="@Model.PropertyId" />
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <input type="hidden" name="clientId" value="@Model.ClientId" />
+                                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                                        </form>
+
+                                        <form method="post" asp-controller="AgentHome" asp-action="RejectOffer">
+                                            <input type="hidden" name="propertyId" value="@Model.PropertyId" />
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <input type="hidden" name="clientId" value="@Model.ClientId" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Rechazar</button>
+                                        </form>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

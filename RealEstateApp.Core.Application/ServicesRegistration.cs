@@ -18,6 +18,8 @@ namespace RealEstateApp.Core.Application
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IOfferService, OfferService>();
             services.AddScoped<IAgentManagementService, AgentManagementService>();
+            services.AddScoped<IAdministratorService, AdministratorService>();
+            services.AddScoped<IDeveloperService, DeveloperService>();
         }
     }
 }

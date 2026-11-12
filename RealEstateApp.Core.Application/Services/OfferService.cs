@@ -10,12 +10,12 @@ namespace RealEstateApp.Core.Application.Services
 {
     public class OfferService : GenericService<OfferDto, Offer>, IOfferService
     {
-        private readonly IGenericRepository<Property> _propertyRepository;
+        private readonly IPropertyRepository _propertyRepository;
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
 
         public OfferService(
-            IGenericRepository<Offer> repository, IGenericRepository<Property> propertyRepository,
+            IOfferRepository repository, IPropertyRepository propertyRepository,
             IUserService userService, IUnitOfWork unitOfWork,
             IMapper mapper) : base(repository, mapper)
         {

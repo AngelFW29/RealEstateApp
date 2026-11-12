@@ -1,0 +1,8 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Staff.EditStaffUserViewModel
+@{
+    ViewData["Title"] = "Cambiar Estado de Desarrollador";
+    ViewData["EntityTypeName"] = "desarrollador";
+    ViewBag.TargetActiveState = !Model.IsActive;
+}
+
+<partial name="_StaffChangeStatus" model="Model" />

@@ -7,5 +7,6 @@ namespace RealEstateApp.Core.Application.Interfaces
         Task<List<PropertyDto>> GetAvailableAsync(PropertyFilterDto filter);
         Task<PropertyDto?> GetAvailableByIdAsync(int id);
         Task<List<PropertyDto>> GetByAgentAsync(string agentId, PropertyFilterDto filter);
+        Task<PropertyDto?> GetAgentPropertyByIdAsync(string agentId, int id);
     }
 }

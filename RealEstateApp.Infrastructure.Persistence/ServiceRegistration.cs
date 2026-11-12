@@ -16,7 +16,16 @@ namespace RealEstateApp.Infrastructure.Persistence
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(Repositories.GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<IPropertyRepository, PropertyRepository>();
+            services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+            services.AddScoped<IPropertyImprovementRepository, PropertyImprovementRepository>();
+            services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
+            services.AddScoped<IImprovementRepository, ImprovementRepository>();
+            services.AddScoped<ISaleTypeRepository, SaleTypeRepository>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+            services.AddScoped<IOfferRepository, OfferRepository>();
         }
 
         public static async Task RunPersistenceSeedAsync(this IServiceProvider serviceProvider)

@@ -23,5 +23,15 @@ namespace RealEstateApp.Helpers
                 _ => "bg-warning text-dark"
             };
         }
+        public static string ToDisplayText(this OfferStatus status)
+        {
+            return status switch
+            {
+                OfferStatus.Pending => "Pendiente",
+                OfferStatus.Rejected => "Rechazada",
+                OfferStatus.Accepted => "Aceptada",
+                _ => string.Empty
+            };
+        }
     }
 }

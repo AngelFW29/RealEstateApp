@@ -13,34 +13,36 @@
 	};
 }
 
-@if (TempData["SuccessMessage"] is string successMessage)
-{
-	<div class="alert alert-success">
-		@successMessage
-		<button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
-	</div>
-}
-
-@if (TempData["ErrorMessage"] is string errorMessage)
-{
-	<div class="alert alert-danger">
-		@errorMessage
-		<button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
-	</div>
-}
-
-<partial name="~/Views/Shared/Components/_PropertyFilters.cshtml" model="Model.Filter" view-data="filterViewData" />
-
-@if (!string.IsNullOrEmpty(Model.EmptyMessage))
-{
-	<div class="alert alert-info">@Model.EmptyMessage</div>
-}
-
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-	@foreach (var property in Model.Properties)
+<div class="property-page">
+	@if (TempData["SuccessMessage"] is string successMessage)
 	{
-		<div class="col">
-			<partial name="~/Views/Shared/Components/_PropertyCard.cshtml" model="property" view-data="cardViewData" />
+		<div class="alert alert-success app-alert">
+			@successMessage
+			<button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
 		</div>
 	}
+
+	@if (TempData["ErrorMessage"] is string errorMessage)
+	{
+		<div class="alert alert-danger app-alert">
+			@errorMessage
+			<button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+		</div>
+	}
+
+	<partial name="~/Views/Shared/Components/_PropertyFilters.cshtml" model="Model.Filter" view-data="filterViewData" />
+
+	@if (!string.IsNullOrEmpty(Model.EmptyMessage))
+	{
+		<div class="alert alert-info app-alert">@Model.EmptyMessage</div>
+	}
+
+	<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 property-grid">
+		@foreach (var property in Model.Properties)
+		{
+			<div class="col">
+				<partial name="~/Views/Shared/Components/_PropertyCard.cshtml" model="property" view-data="cardViewData" />
+			</div>
+		}
+	</div>
 </div>

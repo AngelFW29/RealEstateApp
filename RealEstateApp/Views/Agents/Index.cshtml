@@ -3,53 +3,66 @@
 	ViewData["Title"] = "Agentes";
 }
 
-<h2 class="mb-3">Agentes inmobiliarios</h2>
+<div class="agent-page">
+	<div class="agent-page-header">
+		<span class="section-eyebrow">NUESTRO EQUIPO</span>
+		<h2 class="property-page-title">Agentes inmobiliarios</h2>
+		<p class="property-page-subtitle">Conoce a nuestros agentes y descubre las propiedades que tienen disponibles.</p>
+	</div>
 
-@if (TempData["ErrorMessage"] is string errorMessage)
-{
-    <div class="alert alert-danger">@errorMessage</div>
-}
+	@if (TempData["ErrorMessage"] is string errorMessage)
+	{
+		<div class="alert alert-danger app-alert">@errorMessage</div>
+	}
 
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="get" asp-controller="Agents" asp-action="Index" class="row g-2">
-            <div class="col-md-7">
-                <label asp-for="SearchTerm" class="form-label"></label>
-                <input asp-for="SearchTerm" class="form-control" />
-            </div>
-            <div class="col-md-5 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-                <a asp-controller="Agents" asp-action="Index" class="btn btn-outline-secondary">Limpiar búsqueda</a>
-            </div>
-        </form>
-    </div>
-</div>
+	<div class="card agent-search-card mb-4">
+		<div class="card-body">
+			<form method="get" asp-controller="Agents" asp-action="Index" class="row g-3 align-items-end">
+				<div class="col-md-8">
+					<label asp-for="SearchTerm" class="form-label"></label>
+					<input asp-for="SearchTerm" class="form-control app-form-control" placeholder="Buscar agente por nombre..." />
+				</div>
+				<div class="col-md-4 d-flex agent-search-actions">
+					<button type="submit" class="btn btn-primary app-primary-button">
+						<i class="bi bi-search"></i> Buscar
+					</button>
+					<a asp-controller="Agents" asp-action="Index" class="btn btn-outline-secondary app-secondary-button">
+						Limpiar búsqueda
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
 
-@if (!string.IsNullOrEmpty(Model.EmptyMessage))
-{
-    <div class="alert alert-info">@Model.EmptyMessage</div>
-}
+	@if (!string.IsNullOrEmpty(Model.EmptyMessage))
+	{
+		<div class="alert alert-info app-alert">@Model.EmptyMessage</div>
+	}
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-    @foreach (var agent in Model.Agents)
-    {
-        <div class="col">
-            <a asp-controller="Agents" asp-action="Properties" asp-route-id="@agent.Id" class="text-decoration-none text-reset">
-                <div class="card h-100 text-center shadow-sm">
-                    <div class="card-body">
-                        @if (string.IsNullOrEmpty(agent.PhotoPath))
-                        {
-                            <div class="bg-secondary rounded-circle mx-auto mb-3" style="width: 96px; height: 96px;"></div>
-                        }
-                        else
-                        {
-                            <img src="@agent.PhotoPath" class="rounded-circle mb-3" alt="Foto de @agent.FullName" style="width: 96px; height: 96px; object-fit: cover;" />
-                        }
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 agent-grid">
+		@foreach (var agent in Model.Agents)
+		{
+			<div class="col">
+				<a asp-controller="Agents" asp-action="Properties" asp-route-id="@agent.Id" class="text-decoration-none text-reset agent-card-link">
+					<div class="card h-100 agent-card">
+						<div class="card-body">
+							@if (string.IsNullOrEmpty(agent.PhotoPath))
+							{
+								<div class="agent-card-photo-placeholder">
+									<i class="bi bi-person"></i>
+								</div>
+							}
+							else
+							{
+								<img src="@agent.PhotoPath" class="agent-card-photo" alt="Foto de @agent.FullName" />
+							}
 
-                        <h6 class="card-title mb-0">@agent.FullName</h6>
-                    </div>
-                </div>
-            </a>
-        </div>
-    }
+							<h6 class="agent-card-name">@agent.FullName</h6>
+							<span class="agent-card-action">Ver propiedades <i class="bi bi-arrow-right"></i></span>
+						</div>
+					</div>
+				</a>
+			</div>
+		}
+	</div>
 </div>

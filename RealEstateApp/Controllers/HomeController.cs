@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
@@ -47,6 +48,18 @@ namespace RealEstateApp.Controllers
             }
 
             return View(_mapper.Map<PropertyViewModel>(property));
-        }        
+        }
+        
+        [Authorize]
+        public IActionResult RedirectByRole()
+        {
+            if (User.IsInRole("Agente"))
+                return RedirectToAction("Index", "AgentHome");
+
+            if (User.IsInRole("Cliente"))
+                return RedirectToAction("Index", "ClientHome");
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
