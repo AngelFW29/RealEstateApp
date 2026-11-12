@@ -13,7 +13,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public PropertyService(
             IPropertyRepository repository,
-            IPropertyTypeRepository propertyTypeRepository, 
+            IPropertyTypeRepository propertyTypeRepository,
             IUserService userService,
             IMapper mapper) : base(repository, mapper)
         {

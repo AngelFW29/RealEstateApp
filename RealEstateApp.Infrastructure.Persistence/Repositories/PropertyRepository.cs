@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Domain.Common.Enums;
 using RealEstateApp.Core.Domain.Entities;
 using RealEstateApp.Core.Domain.Interfaces;
 using RealEstateApp.Infrastructure.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealEstateApp.Infrastructure.Persistence.Repositories
 {
@@ -14,6 +11,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
         public PropertyRepository(RealEstateAppContext context) : base(context)
         {
         }
+
         public async Task<List<string>> GetImagePathsByPropertyTypeIdAsync(int propertyTypeId, CancellationToken cancellationToken = default)
         {
             return await _context.Properties
@@ -106,7 +104,6 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
             {
                 _context.Entry(property).State = EntityState.Modified;
 
-                // Remover imágenes seleccionadas
                 if (imageIdsToRemove.Any())
                 {
                     var imagesToDelete = await _context.PropertyImages
@@ -116,14 +113,12 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                     _context.PropertyImages.RemoveRange(imagesToDelete);
                 }
 
-                // Agregar nuevas imágenes
                 foreach (var img in newImages)
                 {
                     img.PropertyId = property.Id;
                     await _context.PropertyImages.AddAsync(img, cancellationToken);
                 }
 
-                // Sincronizar mejoras
                 var existingImprovements = await _context.PropertyImprovements
                     .Where(pi => pi.PropertyId == property.Id)
                     .ToListAsync(cancellationToken);
@@ -166,7 +161,6 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
             }
         }
 
-        // Additional methods for agent-specific operations
         public async Task<Dictionary<string, int>> CountByAgentIdsAsync(IEnumerable<string> agentIds, CancellationToken cancellationToken = default)
         {
             var list = agentIds?.ToList() ?? [];
@@ -178,6 +172,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 .Select(g => new { AgentId = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(x => x.AgentId, x => x.Count, cancellationToken);
         }
+
         public async Task<List<string>> GetImagePathsByAgentAsync(string agentId, CancellationToken cancellationToken = default)
         {
             return await _context.Properties
@@ -186,12 +181,12 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 .Select(img => img.ImagePath)
                 .ToListAsync(cancellationToken);
         }
+
         public async Task DeleteByAgentAsync(string agentId, CancellationToken cancellationToken = default)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                // Eliminar mensajes de chat asociados al agente directamente si no están cubiertos por cascada de propiedad
                 var chatMessages = await _context.ChatMessages
                     .Where(cm => cm.AgentId == agentId)
                     .ToListAsync(cancellationToken);
@@ -218,6 +213,5 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 throw;
             }
         }
-        
     }
 }
