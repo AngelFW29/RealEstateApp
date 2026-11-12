@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using RealEstateApp.Core.Application;
 using RealEstateApp.Infrastructure.Identity;
@@ -12,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddPersistenceLayer(builder.Configuration);
-builder.Services.AddIdentityForWebApi(builder.Configuration); 
+builder.Services.AddIdentityForWebApi(builder.Configuration);
 builder.Services.AddSharedLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
 
@@ -32,7 +31,13 @@ builder.Services.AddSwaggerGen(o =>
     });
     o.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 

@@ -14,6 +14,9 @@ builder.Services.AddIdentityForWebApp(builder.Configuration);
 builder.Services.AddSharedLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
 
+builder.Services.AddScoped<RealEstateApp.Core.Application.Interfaces.IAccountService,
+                           RealEstateApp.Infrastructure.Identity.Services.UserService>();
+
 var app = builder.Build();
 
 // Ejecutar Migraciones y Seeds
@@ -22,6 +25,7 @@ await app.Services.RunIdentitySeedAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 var uploadsPath = Path.GetFullPath(
     Path.Combine(builder.Environment.ContentRootPath,
                  builder.Configuration["Storage:UploadsPath"] ?? "../Uploads"));
@@ -32,8 +36,8 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(uploadsPath),
     RequestPath = "/uploads"
 });
-app.UseRouting();
 
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
