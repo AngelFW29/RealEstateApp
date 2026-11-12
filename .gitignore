@@ -367,3 +367,5 @@ appsettings.Development.json
 
 # Imágenes de propiedades
 /RealEstateApp/wwwroot/images/
+
+Uploads/

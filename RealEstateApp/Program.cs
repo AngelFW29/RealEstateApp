@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using RealEstateApp.Core.Application;
 using RealEstateApp.Infrastructure.Identity;
 using RealEstateApp.Infrastructure.Persistence;
@@ -21,6 +22,16 @@ await app.Services.RunIdentitySeedAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+var uploadsPath = Path.GetFullPath(
+    Path.Combine(builder.Environment.ContentRootPath,
+                 builder.Configuration["Storage:UploadsPath"] ?? "../Uploads"));
+Directory.CreateDirectory(uploadsPath);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
 app.UseRouting();
 
 app.UseAuthentication();

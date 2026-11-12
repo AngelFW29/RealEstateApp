@@ -7,12 +7,13 @@ namespace RealEstateApp.Infrastructure.Shared.Services
 {
     public class LocalFileStorage : IFileStorage
     {
-        private readonly string _webRoot;
+        private readonly string _root;
 
         public LocalFileStorage(IWebHostEnvironment env, IConfiguration config)
         {
-            var configuredPath = config["Storage:WebRootPath"] ?? "wwwroot";
-            _webRoot = Path.GetFullPath(Path.Combine(env.ContentRootPath, configuredPath));
+            _root = Path.GetFullPath(
+                Path.Combine(env.ContentRootPath, config["Storage:UploadsPath"] ?? "../Uploads"));
+            Directory.CreateDirectory(_root);
         }
         
         public async Task<string> SaveAsync(Stream stream, string fileName, string folder, CancellationToken cancellationToken = default)
@@ -31,13 +32,11 @@ namespace RealEstateApp.Infrastructure.Shared.Services
         
         public async Task<string> SaveAsync(IFormFile file, string folder)
         {
-            var dir = Path.Combine(_webRoot, "uploads", folder.Replace('/', Path.DirectorySeparatorChar));
+            var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
             var name = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName).ToLowerInvariant()}";
-            var fullPath = Path.Combine(dir, name);
-
-            await using var fs = new FileStream(fullPath, FileMode.Create);
+            await using var fs = new FileStream(Path.Combine(dir, name), FileMode.Create);
             await file.CopyToAsync(fs);
 
             return $"/uploads/{folder}/{name}";
@@ -45,24 +44,20 @@ namespace RealEstateApp.Infrastructure.Shared.Services
 
         public void Delete(string? relativePath)
         {
-            if (string.IsNullOrWhiteSpace(relativePath) || relativePath.StartsWith("/img/")) return;
+            if (string.IsNullOrWhiteSpace(relativePath) || !relativePath.StartsWith("/uploads/")) return;
 
-            var fullPath = Path.GetFullPath(Path.Combine(_webRoot, relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar)));
+            var full = Path.GetFullPath(
+                Path.Combine(_root, relativePath["/uploads/".Length..].Replace('/', Path.DirectorySeparatorChar)));
 
-            // Seguridad: verificar que el archivo esté dentro del _webRoot antes de borrar
-            if (fullPath.StartsWith(_webRoot) && File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
+            if (full.StartsWith(_root) && File.Exists(full)) File.Delete(full);
         }
 
         public void DeleteFolder(string folder)
         {
-            var fullPath = Path.GetFullPath(Path.Combine(_webRoot, "uploads", folder.Replace('/', Path.DirectorySeparatorChar)));
-            if (fullPath.StartsWith(_webRoot) && Directory.Exists(fullPath))
-            {
-                Directory.Delete(fullPath, true);
-            }
+            var full = Path.GetFullPath(
+                Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar)));
+
+            if (full.StartsWith(_root) && Directory.Exists(full)) Directory.Delete(full, true);
         }
     }
 }
