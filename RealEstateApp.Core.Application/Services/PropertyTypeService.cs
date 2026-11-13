@@ -5,7 +5,7 @@ using RealEstateApp.Core.Domain.Interfaces;
 
 namespace RealEstateApp.Core.Application.Services
 {
-    public class PropertyTypeService : CatalogService<PropertyType>, ICatalogService
+    public class PropertyTypeService : CatalogService<PropertyType>, IPropertyTypeService
     {
         private readonly IPropertyRepository _propertyRepository;
         private readonly IFileStorage _fileStorage;
