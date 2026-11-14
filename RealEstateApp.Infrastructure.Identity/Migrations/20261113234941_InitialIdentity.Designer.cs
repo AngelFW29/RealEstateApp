@@ -12,7 +12,7 @@ using RealEstateApp.Infrastructure.Identity.Contexts;
 namespace RealEstateApp.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20261104165921_InitialIdentity")]
+    [Migration("20261113234941_InitialIdentity")]
     partial class InitialIdentity
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace RealEstateApp.Infrastructure.Identity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "10.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
