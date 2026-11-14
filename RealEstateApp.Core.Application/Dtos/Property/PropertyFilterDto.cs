@@ -1,6 +1,5 @@
 ﻿using RealEstateApp.Core.Domain.Common.Enums;
 
-
 namespace RealEstateApp.Core.Application.Dtos.Property
 {
     public class PropertyFilterDto

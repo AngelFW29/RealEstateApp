@@ -8,5 +8,10 @@ namespace RealEstateApp.Core.Application.Interfaces
         Task<PropertyDto?> GetAvailableByIdAsync(int id);
         Task<List<PropertyDto>> GetByAgentAsync(string agentId, PropertyFilterDto filter);
         Task<PropertyDto?> GetAgentPropertyByIdAsync(string agentId, int id);
+
+        // Methods for Api
+        Task<List<PropertyApiDto>> GetAllForApiAsync();
+        Task<PropertyApiDto?> GetByIdForApiAsync(int id);
+        Task<PropertyApiDto?> GetByCodeForApiAsync(string code);
     }
 }

@@ -57,6 +57,31 @@ namespace RealEstateApp.Core.Application.Services
                 ? null
                 : _mapper.Map<PropertyDto>(property);
         }
+        public async Task<List<PropertyApiDto>> GetAllForApiAsync()
+        {
+            var properties = await _repository.GetAllAsync(null, ApiIncludes);
+
+            var ordered = properties
+                .OrderByDescending(p => p.CreatedAt)
+                .ThenByDescending(p => p.Id);
+
+            var dtos = _mapper.Map<List<PropertyApiDto>>(ordered);
+
+            await FillAgentNamesAsync(dtos);
+            return dtos;
+        }
+        public async Task<PropertyApiDto?> GetByIdForApiAsync(int id)
+        {
+            var property = await _repository.GetByIdAsync(id, ApiIncludes);
+            return await ToApiDtoAsync(property);
+        }
+        public async Task<PropertyApiDto?> GetByCodeForApiAsync(string code)
+        {
+            var normalized = code.Trim();
+
+            var property = (await _repository.GetAllAsync(p => p.Code == normalized, ApiIncludes)).FirstOrDefault();
+            return await ToApiDtoAsync(property);
+        }
 
         #region Private methods
         private async Task EnsurePropertyTypeExistsAsync(int? propertyTypeId)
@@ -118,6 +143,32 @@ namespace RealEstateApp.Core.Application.Services
         }
         private static readonly string[] ListIncludes = ["PropertyType", "SaleType", "Images"];
         private static readonly string[] DetailIncludes = ["PropertyType", "SaleType", "Images", "Improvements.Improvement"];
+        
+        //Api
+        private static readonly string[] ApiIncludes = ["PropertyType", "SaleType", "Improvements.Improvement"];
+        private async Task<PropertyApiDto?> ToApiDtoAsync(Property? property)
+        {
+            if (property is null)
+                return null;
+
+            var dto = _mapper.Map<PropertyApiDto>(property);
+
+            await FillAgentNamesAsync([dto]);
+            return dto;
+        }
+        private async Task FillAgentNamesAsync(List<PropertyApiDto> dtos)
+        {
+            if (dtos.Count == 0)
+                return;
+
+            var agents = await _userService.GetBasicInfoByIdsAsync(dtos.Select(d => d.AgentId).Distinct());
+
+            foreach (var dto in dtos)
+            {
+                if (agents.TryGetValue(dto.AgentId, out var agent))
+                    dto.AgentName = agent.FullName;
+            }
+        }
         #endregion
     }
 }
