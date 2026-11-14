@@ -21,6 +21,8 @@ namespace RealEstateApp.Core.Application
             services.AddScoped<IAdministratorService, AdministratorService>();
             services.AddScoped<IDeveloperService, DeveloperService>();
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
+            services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+            services.AddScoped<IAgentProfileService, AgentProfileService>();
         }
     }
 }

@@ -44,7 +44,7 @@
 						else if (User.IsInRole("Agente"))
 						{
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentHome" asp-action="Index">Home del agente</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentHome" asp-action="Profile">Mi perfil</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentProfile" asp-action="Index">Mi perfil</a></li>
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentProperties" asp-action="Index">Mantenimiento de propiedades</a></li>
 						}
 						else if (User.IsInRole("Administrador"))

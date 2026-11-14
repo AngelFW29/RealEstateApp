@@ -17,5 +17,6 @@ namespace RealEstateApp.Core.Domain.Interfaces
         Task<Dictionary<string, int>> CountByAgentIdsAsync(IEnumerable<string> agentIds, CancellationToken cancellationToken = default);
         Task<List<string>> GetImagePathsByAgentAsync(string agentId, CancellationToken cancellationToken = default);
         Task DeleteByAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        Task<(int Available, int Sold)> CountByStatusAsync();
     }
 }

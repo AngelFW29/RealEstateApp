@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Application;
 using RealEstateApp.Core.Application.Dtos;
+using RealEstateApp.Core.Application.Dtos.Identity;
 using RealEstateApp.Core.Application.Dtos.User;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Infrastructure.Identity.Entities;
@@ -255,6 +256,56 @@ namespace RealEstateApp.Infrastructure.Identity.Services
                 "PasswordTooShort" => "La contraseña debe ser más larga.",
                 _ => error.Description
             };
+        }
+
+        public async Task<List<RoleStatusCountDto>> CountUsersByRoleAndStatusAsync()
+        {
+            var users = _userManager.Users.ToList();
+            var result = new List<RoleStatusCountDto>();
+
+            string[] roles = [Roles.Admin, Roles.Client, Roles.Agent, Roles.Developer];
+
+            foreach (var role in roles)
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+
+                var activeCount = usersInRole.Count(u => u.IsActive);
+                var inactiveCount = usersInRole.Count(u => !u.IsActive);
+
+                result.Add(new RoleStatusCountDto { Role = role, IsActive = true, Count = activeCount });
+                result.Add(new RoleStatusCountDto { Role = role, IsActive = false, Count = inactiveCount });
+            }
+
+            return result;
+        }
+
+        public async Task<(Result Result, string? OldPhotoUrl)> UpdateUserProfileAsync(string userId, string Fullname, string phoneNumber, string? newPhotoUrl)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return (Result.Fail("Usuario no encontrado."), null);
+            }
+
+            user.FirstName = Fullname.Split(' ').FirstOrDefault();
+            user.LastName = string.Join(' ', Fullname.Split(' ').Skip(1));
+            user.PhoneNumber = phoneNumber;
+
+            string? oldPhotoUrl = user.PhotoPath;
+
+            if (!string.IsNullOrEmpty(newPhotoUrl))
+            {
+                user.PhotoPath = newPhotoUrl;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return (Result.Fail(errors), null);
+            }
+
+            return (Result.Ok(), oldPhotoUrl);
         }
         #endregion
 

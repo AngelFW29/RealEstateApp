@@ -218,6 +218,18 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 throw;
             }
         }
-        
+        public async Task<(int Available, int Sold)> CountByStatusAsync()
+        {
+            var counts = await _context.Properties
+                .GroupBy(p => p.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            int available = counts.FirstOrDefault(c => c.Status == PropertyStatus.Available)?.Count ?? 0;
+            int sold = counts.FirstOrDefault(c => c.Status == PropertyStatus.Sold)?.Count ?? 0;
+
+            return (available, sold);
+        }
+
     }
 }

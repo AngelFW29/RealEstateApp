@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using RealEstateApp.Core.Application.Dtos.Property;
 
 namespace RealEstateApp.Core.Application
 {
@@ -21,6 +22,29 @@ namespace RealEstateApp.Core.Application
                 var header = new byte[4];
                 if (stream.Read(header, 0, 4) < 4) return false;
 
+                bool isJpg = header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF;
+                bool isPng = header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47;
+
+                return isJpg || isPng;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static bool IsValidimage(ImageUploadDto? file)
+        {
+            if (file == null || file.Content == null || file.Content.Length == 0) return false;
+            if (string.IsNullOrEmpty(file.FileName)) return false;
+
+            var extension = Path.GetExtension(file.FileName);
+            if (string.IsNullOrEmpty(extension)) return false;
+            if (!AllowedExtensions.Contains(extension.ToLowerInvariant())) return false;
+
+            try
+            {
+                var header = new byte[4];
+                if (file.Content.Length < 4) return false;
                 bool isJpg = header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF;
                 bool isPng = header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47;
 

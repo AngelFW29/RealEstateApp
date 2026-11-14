@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Acceso Denegado";
+    string homeUrl = "/Home/Index";
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        if (User.IsInRole("[Administrator]")) homeUrl = "/AdminHome/Index";
+        else if (User.IsInRole("[Agent]")) homeUrl = "/AgentHome/Index";
+        else if (User.IsInRole("[Client]")) homeUrl = "/ClientHome/Index";
+        else if (User.IsInRole("[Developer]")) homeUrl = "/DeveloperHome/Index";
+    }
+}
+
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 p-4">
+                <h1 class="text-danger display-4 mb-3">Acceso Denegado</h1>
+                <p class="lead text-muted">No tienes permisos para acceder a esta sección.</p>
+                <hr />
+                <div class="mt-3">
+                    <a href="@homeUrl" class="btn btn-primary">Ir a mi Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
