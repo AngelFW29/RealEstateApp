@@ -1,0 +1,25 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Property.SavePropertyViewModel
+@{
+    ViewData["Title"] = "Crear Propiedad";
+}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 p-4">
+                <h3 class="mb-3">Crear Nueva Propiedad</h3>
+                <form asp-action="Create" method="post" enctype="multipart/form-data" id="propertyForm">
+                    @Html.AntiForgeryToken()
+                    <partial name="_PropertyForm" model="Model" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Crear propiedad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/property-images.js"></script>
+}

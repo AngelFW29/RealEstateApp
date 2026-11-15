@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RealEstateApp.Core.Application;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.Agent;
@@ -9,7 +10,7 @@ using System.Security.Claims;
 
 namespace RealEstateApp.Controllers
 {
-    [Authorize(Roles = "[Agent]")]
+    [Authorize(Roles = "Agente")]
     public class AgentProfileController : Controller
     {
         private readonly IAgentProfileService _profileService;
@@ -46,6 +47,14 @@ namespace RealEstateApp.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Challenge();
 
+            if (profileImage != null && profileImage.Length > 0)
+            {
+                if (!ImageHelper.IsValid(profileImage))
+                {
+                    ModelState.AddModelError("profileImage", "El formato de la imagen no es válido (solo se permiten JPG y PNG).");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 var currentData = await _profileService.GetAsync(userId, cancellationToken);
@@ -56,23 +65,13 @@ namespace RealEstateApp.Controllers
                 return View(vm);
             }
 
-            ImageUploadDto? imageDto = null;
-            if (profileImage != null && profileImage.Length > 0)
-            {
-                using var memoryStream = new MemoryStream();
-                await profileImage.CopyToAsync(memoryStream, cancellationToken);
-                imageDto = new ImageUploadDto
-                {
-                    FileName = profileImage.FileName,
-                    ContentType = profileImage.ContentType,
-                    Content = memoryStream
-                };
-            }
-
+            IFormFile? imageDto = null;
             var updateResult = await _profileService.UpdateAsync(userId, vm, imageDto, cancellationToken);
             if (!updateResult.Success)
             {
-                ModelState.AddModelError(string.Empty, updateResult.Message ?? "Error al actualizar el perfil.");
+                var errorMessage = updateResult.FirstError ?? updateResult.Message ?? "Error al actualizar el perfil.";
+                ModelState.AddModelError(string.Empty, errorMessage);
+
                 var currentData = await _profileService.GetAsync(userId, cancellationToken);
                 if (currentData.Success)
                 {

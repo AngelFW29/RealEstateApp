@@ -1,0 +1,49 @@
+﻿@model IEnumerable<RealEstateApp.Core.Application.ViewModels.Catalog.CatalogListViewModel>
+@{
+    ViewData["Title"] = "Mantenimiento de Tipos de Venta";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mantenimiento</h2>
+        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Nuevo Registro</a>
+    </div>
+
+    <div class="card shadow border-0 p-3">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th class="text-center">Propiedades Asociadas</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@item.Name</td>
+                            <td>@item.Description</td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary">@item.PropertyCount</span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No hay registros creados todavía.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

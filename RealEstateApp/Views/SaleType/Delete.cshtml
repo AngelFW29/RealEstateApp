@@ -1,0 +1,37 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Catalog.CatalogListViewModel
+@{
+    ViewData["Title"] = "Eliminar Registro";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 p-4">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading fw-bold">¿Estás seguro que deseas eliminar este registro?</h4>
+                    <p class="mb-0">Esta acción no se puede deshacer. Si hay propiedades asociadas a este elemento, es posible que el sistema no te permita eliminarlo.</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Nombre</label>
+                    <p class="fs-5 text-dark">@Model.Name</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Descripción</label>
+                    <p class="text-secondary">@Model.Description</p>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

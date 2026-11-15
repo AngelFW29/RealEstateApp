@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.FileProviders;
 using RealEstateApp.Core.Application;
 using RealEstateApp.Infrastructure.Identity;
 using RealEstateApp.Infrastructure.Persistence;
 using RealEstateApp.Infrastructure.Shared;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +22,29 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Home/AccessDenied";
 });
 
+// validacion para el tamaño máximo de los archivos subidos
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 20 * 1024 * 1024;
+});
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 20 * 1024 * 1024;
+});
+
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
+
+// Configurar cultura es-DO para soporte de decimales y precios
+var supportedCultures = new[] { new CultureInfo("es-DO") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("es-DO"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 // Ejecutar Migraciones y Seeds
 await app.Services.RunPersistenceSeedAsync();

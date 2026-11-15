@@ -1,4 +1,5 @@
-﻿using RealEstateApp.Core.Application.Dtos.Property;
+﻿using Microsoft.AspNetCore.Http;
+using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.Agent;
 
@@ -35,18 +36,18 @@ namespace RealEstateApp.Core.Application.Services
             return Result<AgentProfileViewModel>.Ok(vm);
         }
 
-        public async Task<Result> UpdateAsync(string userId, AgentProfileViewModel vm, ImageUploadDto? newPhoto, CancellationToken cancellationToken = default)
+        public async Task<Result> UpdateAsync(string userId, AgentProfileViewModel vm, IFormFile? newPhoto, CancellationToken cancellationToken = default)
         {
             string? newPhotoUrl = null;
 
             if (newPhoto != null)
             {
-                if (!ImageHelper.IsValidimage(newPhoto))
+                if (!ImageHelper.IsValid(newPhoto))
                 {
                     return Result.Fail("El archivo seleccionado no tiene un formato de imagen válido.");
                 }
 
-                newPhotoUrl = await _fileStorage.SaveAsync(newPhoto.Content, Path.GetExtension(newPhoto.FileName), "profiles");
+                newPhotoUrl = await _fileStorage.SaveAsync(newPhoto.OpenReadStream(), Path.GetExtension(newPhoto.FileName), "profiles");
             }
 
             var (updateResult, oldPhotoUrl) = await _accountService.UpdateUserProfileAsync(userId, vm.FullName, vm.PhoneNumber, newPhotoUrl);

@@ -1,19 +1,22 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RealEstateApp.Core.Application.Dtos.Property;
+using Microsoft.AspNetCore.Authorization;
+using RealEstateApp.Core.Application.Services;
 using RealEstateApp.Core.Application.Exceptions;
 using RealEstateApp.Core.Application.Interfaces;
-using RealEstateApp.Core.Application.Services;
+using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.ViewModels.Agent;
 using RealEstateApp.Core.Application.ViewModels.Property;
 
 namespace RealEstateApp.Controllers
 {
+    [Authorize(Roles = "Agente,Administrador")]
     public class AgentsController : Controller
     {
         private readonly IUserService _userService;
         private readonly IPropertyService _propertyService;
         private readonly IMapper _mapper;
+
         public AgentsController(IUserService userService, IPropertyService propertyService, IMapper mapper)
         {
             _userService = userService;

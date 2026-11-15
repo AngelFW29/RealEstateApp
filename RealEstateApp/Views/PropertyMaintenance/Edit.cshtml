@@ -1,0 +1,26 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Property.SavePropertyViewModel
+@{
+    ViewData["Title"] = "Editar Propiedad";
+}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 p-4">
+                <h3 class="mb-3">Editar Propiedad</h3>
+                <form asp-action="Edit" method="post" enctype="multipart/form-data" id="propertyForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <partial name="_PropertyForm" model="Model" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Guardar propiedad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/property-images.js"></script>
+}

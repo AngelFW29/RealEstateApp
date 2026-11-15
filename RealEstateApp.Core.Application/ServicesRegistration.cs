@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Services;
+using RealEstateApp.Core.Domain.Interfaces;
 using System.Reflection;
 
 namespace RealEstateApp.Core.Application
@@ -23,6 +24,10 @@ namespace RealEstateApp.Core.Application
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
             services.AddScoped<IAdminDashboardService, AdminDashboardService>();
             services.AddScoped<IAgentProfileService, AgentProfileService>();
+            services.AddScoped<IAgentService, AgentService>();
+            services.AddScoped<IPropertyTypeService, PropertyTypeService>();
+            services.AddScoped<ISaleTypeService, SaleTypeService>();
+            services.AddScoped<IPropertyImprovementService, ImprovementService>();
         }
     }
 }

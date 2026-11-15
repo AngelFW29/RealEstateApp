@@ -18,7 +18,7 @@ namespace RealEstateApp.Infrastructure.Shared.Services
         
         public async Task<string> SaveAsync(Stream stream, string fileName, string folder, CancellationToken cancellationToken = default)
         {
-            var dir = Path.Combine(_root, "uploads", folder.Replace('/', Path.DirectorySeparatorChar));
+            var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
             var name = $"{Guid.NewGuid():N}{Path.GetExtension(fileName).ToLowerInvariant()}";
