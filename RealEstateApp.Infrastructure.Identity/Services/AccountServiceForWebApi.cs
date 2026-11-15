@@ -32,7 +32,7 @@ public class AccountServiceForWebApi : IApiAccountService
             return new AuthResult { StatusCode = 401, Message = "El usuario se encuentra inactivo y no puede autenticarse." };
 
         var roles = await _userManager.GetRolesAsync(user);
-        // P1: Chequea esta validación, porque impide que el usuario con rol cliente pueda autenticarse en la Api y obtener JWT.
+        // Regla de negocio: solo Administradores y Desarrolladores pueden autenticarse en la API.
         if (!roles.Contains("Administrador") && !roles.Contains("Desarrollador"))
             return new AuthResult { StatusCode = 403, Message = "Acceso denegado. Su usuario no tiene permisos para acceder a la API." };
 
