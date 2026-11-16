@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens; 
-using RealEstateApp.Core.Application; 
-using RealEstateApp.Core.Application.Dtos; 
-using RealEstateApp.Core.Application.Interfaces; 
+using Microsoft.IdentityModel.Tokens;
+using RealEstateApp.Core.Application;
+using RealEstateApp.Core.Application.Dtos;
+using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Infrastructure.Identity.Entities;
 
 namespace RealEstateApp.Infrastructure.Identity.Services;
@@ -32,6 +32,7 @@ public class AccountServiceForWebApi : IApiAccountService
             return new AuthResult { StatusCode = 401, Message = "El usuario se encuentra inactivo y no puede autenticarse." };
 
         var roles = await _userManager.GetRolesAsync(user);
+        // Regla de negocio: solo Administradores y Desarrolladores pueden autenticarse en la API.
         if (!roles.Contains("Administrador") && !roles.Contains("Desarrollador"))
             return new AuthResult { StatusCode = 403, Message = "Acceso denegado. Su usuario no tiene permisos para acceder a la API." };
 

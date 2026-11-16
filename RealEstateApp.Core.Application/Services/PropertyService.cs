@@ -22,7 +22,7 @@ namespace RealEstateApp.Core.Application.Services
             IFileStorage iFileStorage,
             ISaleTypeRepository saleTypeRepository,
             IPropertyRepository repository,
-            IPropertyTypeRepository propertyTypeRepository, 
+            IPropertyTypeRepository propertyTypeRepository,
             IUserService userService,
             IMapper mapper) : base(repository, mapper)
         {

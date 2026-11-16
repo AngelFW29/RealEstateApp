@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using RealEstateApp.Core.Application.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Dtos.Property;
@@ -15,12 +15,13 @@ namespace RealEstateApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IMapper _mapper;
-
-        public AgentsController(IUserService userService, IPropertyService propertyService, IMapper mapper)
+        public AgentsController(IUserService userService, IPropertyService propertyService, IPropertyTypeService propertyTypeService, IMapper mapper)
         {
             _userService = userService;
             _propertyService = propertyService;
+            _propertyTypeService = propertyTypeService;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index(string? searchTerm)
@@ -41,6 +42,17 @@ namespace RealEstateApp.Controllers
         public async Task<IActionResult> Properties(string id, PropertyFilterViewModel filter)
         {
             var agent = (await _userService.GetActiveAgentsAsync()).FirstOrDefault(a => a.Id == id);
+
+            var propertyTypes = await _propertyTypeService.GetAllAsync();
+
+            var propertyTypeItems = propertyTypes
+                .Select(pt => new SelectListItem
+                {
+                    Value = pt.Id.ToString(),
+                    Text = pt.Name
+                })
+                .ToList();
+            ViewData["PropertyTypes"] = propertyTypeItems;
 
             if (agent is null)
             {

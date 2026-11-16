@@ -6,14 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RealEstateApp.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class CompletePropertyEntities : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Propiedades");
-
             migrationBuilder.CreateTable(
                 name: "Improvements",
                 columns: table => new
@@ -307,29 +304,6 @@ namespace RealEstateApp.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "SaleTypes");
-
-            migrationBuilder.CreateTable(
-                name: "Propiedades",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AgenteId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Banos = table.Column<int>(type: "int", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Habitaciones = table.Column<int>(type: "int", nullable: false),
-                    Precio = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Tamano = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    TipoPropiedadId = table.Column<int>(type: "int", nullable: false),
-                    TipoVentaId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Propiedades", x => x.Id);
-                });
         }
     }
 }

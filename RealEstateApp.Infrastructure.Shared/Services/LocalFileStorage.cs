@@ -29,13 +29,11 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
-            var name = $"{Guid.NewGuid():N}{Path.GetExtension(fileName).ToLowerInvariant()}";
-            var fullPath = Path.Combine(dir, name);
+            var name = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName).ToLowerInvariant()}";
+            await using var fs = new FileStream(Path.Combine(dir, name), FileMode.Create);
+            await file.CopyToAsync(fs);
 
-            await using var fs = new FileStream(fullPath, FileMode.Create);
-            await stream.CopyToAsync(fs, cancellationToken);
-
-            return $"/uploads/{folder}/{name}".Replace("\\", "/");
+            return $"/uploads/{folder}/{name}";
         }
 
         public async Task<string> SaveAsync(IFormFile file, string folder)
@@ -43,9 +41,12 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
-            var name = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName).ToLowerInvariant()}";
-            await using var fs = new FileStream(Path.Combine(dir, name), FileMode.Create);
-            await file.CopyToAsync(fs);
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            var name = $"{Guid.NewGuid():N}{extension}";
+            var fullPath = Path.Combine(dir, name);
+
+            await using var fs = new FileStream(fullPath, FileMode.Create);
+            await stream.CopyToAsync(fs, cancellationToken);
 
             return $"/uploads/{folder}/{name}".Replace("\\", "/");
         }

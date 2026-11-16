@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Domain.Common;
 using RealEstateApp.Core.Domain.Entities;
 using RealEstateApp.Core.Domain.Interfaces;
@@ -31,6 +31,5 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 ))
                 .ToListAsync(cancellationToken);
         }
-
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
 using RealEstateApp.Core.Application.Interfaces;
@@ -11,15 +12,27 @@ namespace RealEstateApp.Controllers
     public class HomeController : Controller
     {
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IMapper _mapper;
-        public HomeController(IPropertyService propertyService, IMapper mapper)
+        public HomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeService, IMapper mapper)
         {
             _propertyService = propertyService;
+            _propertyTypeService = propertyTypeService;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index(PropertyFilterViewModel filter)
         {
             var model = new HomeViewModel { Filter = filter };
+
+            var propertyTypes = await _propertyTypeService.GetAllAsync();
+
+            ViewData["PropertyTypes"] = propertyTypes
+                .Select(pt => new SelectListItem
+                {
+                    Value = pt.Id.ToString(),
+                    Text = pt.Name
+                })
+                .ToList();
 
             if (!ModelState.IsValid) return View(model);
 
@@ -49,7 +62,7 @@ namespace RealEstateApp.Controllers
 
             return View(_mapper.Map<PropertyViewModel>(property));
         }
-        
+
         [Authorize]
         public IActionResult RedirectByRole()
         {

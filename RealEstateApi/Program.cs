@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using RealEstateApi.Middlewares;
 using RealEstateApp.Core.Application;
@@ -15,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddPersistenceLayer(builder.Configuration);
-builder.Services.AddIdentityForWebApi(builder.Configuration); 
+builder.Services.AddIdentityForWebApi(builder.Configuration);
 builder.Services.AddSharedLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
 // Añadir esta configuración de respuesta de validación justo debajo de builder.Services.AddControllers();
@@ -51,7 +50,13 @@ builder.Services.AddSwaggerGen(o =>
     });
     o.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 

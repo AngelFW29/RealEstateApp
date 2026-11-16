@@ -116,6 +116,7 @@ namespace RealEstateApp.Infrastructure.Identity
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IApiAccountService, AccountServiceForWebApi>();
+            services.AddScoped<IAccountService, UserService>();
         }
 
         public static async Task RunIdentitySeedAsync(this IServiceProvider serviceProvider)

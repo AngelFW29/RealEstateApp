@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstateApp.Core.Application.Dtos.Chat;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
@@ -18,15 +19,17 @@ namespace RealEstateApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IChatService _chatService;
         private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
 
-        public AgentHomeController(IUserService userService, IPropertyService propertyService, IChatService chatService,
+        public AgentHomeController(IUserService userService, IPropertyService propertyService, IPropertyTypeService propertyTypeService, IChatService chatService,
             IOfferService offerService, IMapper mapper)
         {
             _userService = userService;
             _propertyService = propertyService;
+            _propertyTypeService = propertyTypeService;
             _chatService = chatService;
             _offerService = offerService;
             _mapper = mapper;
@@ -35,6 +38,16 @@ namespace RealEstateApp.Controllers
         public async Task<IActionResult> Index(PropertyFilterViewModel filter)
         {
             var model = new HomeViewModel { Filter = filter };
+
+            var propertyTypes = await _propertyTypeService.GetAllAsync();
+
+            ViewData["PropertyTypes"] = propertyTypes
+                .Select(pt => new SelectListItem
+                {
+                    Value = pt.Id.ToString(),
+                    Text = pt.Name
+                })
+                .ToList();
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -170,7 +183,7 @@ namespace RealEstateApp.Controllers
             }
             catch (BusinessRuleException ex)
             {
-                TempData["ErrorMessage"] = ex.Message;                
+                TempData["ErrorMessage"] = ex.Message;
             }
 
             return RedirectToAction(nameof(ClientOffers), new { propertyId, clientId });

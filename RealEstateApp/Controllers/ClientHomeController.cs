@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
 using RealEstateApp.Core.Application.Interfaces;
+using RealEstateApp.Core.Application.Services;
 using RealEstateApp.Core.Application.ViewModels.Chat;
 using RealEstateApp.Core.Application.ViewModels.Offer;
 using RealEstateApp.Core.Application.ViewModels.Property;
@@ -15,14 +17,16 @@ namespace RealEstateApp.Controllers
     public class ClientHomeController : Controller
     {
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IFavoriteService _favoriteService;
         private readonly IChatService _chatService;
         private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
-        public ClientHomeController(IPropertyService propertyService, IFavoriteService favoriteService,
+        public ClientHomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeService, IFavoriteService favoriteService,
             IChatService chatService, IOfferService offerService, IMapper mapper)
         {
             _propertyService = propertyService;
+            _propertyTypeService = propertyTypeService;
             _favoriteService = favoriteService;
             _chatService = chatService;
             _offerService = offerService;
@@ -30,11 +34,15 @@ namespace RealEstateApp.Controllers
         }
         public async Task<IActionResult> Index(PropertyFilterViewModel filter)
         {
+            await LoadPropertyTypesAsync();
+
             var model = await BuildModelAsync(filter, _propertyService.GetAvailableAsync, emptyDefault: null);
             return View(model);
         }
         public async Task<IActionResult> MyProperties(PropertyFilterViewModel filter)
         {
+            await LoadPropertyTypesAsync();
+
             var model = await BuildModelAsync(filter,
                 f => _favoriteService.GetFavoritePropertiesAsync(ClientId, f),
                 emptyDefault: "No tiene propiedades favoritas disponibles en este momento.");
@@ -160,6 +168,20 @@ namespace RealEstateApp.Controllers
                 model.EmptyMessage = filter.GetNoResultsMessage() ?? emptyDefault;
 
             return model;
+        }
+        private async Task LoadPropertyTypesAsync()
+        {
+            var propertyTypes = await _propertyTypeService.GetAllAsync();
+
+            var propertyTypeItems = propertyTypes
+                .Select(pt => new SelectListItem
+                {
+                    Value = pt.Id.ToString(),
+                    Text = pt.Name
+                })
+                .ToList();
+
+            ViewData["PropertyTypes"] = propertyTypeItems;
         }
         private async Task MarkFavoritesAsync(List<PropertyViewModel> properties)
         {
