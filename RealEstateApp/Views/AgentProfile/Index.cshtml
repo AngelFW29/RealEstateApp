@@ -1,0 +1,78 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Agent.AgentProfileViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="property-detail-extra">
+    <div class="row g-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="property-detail-section">
+                <h5>
+                    <i class="bi bi-person-circle"></i>
+                    Mi Perfil
+                </h5>
+
+                <form asp-action="Index" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Foto actual -->
+                    <div class="text-center mb-4">
+                        <img id="previewImage"
+                             src="@(string.IsNullOrEmpty(Model.CurrentPhotoUrl) ? "/img/default-avatar.svg" : Model.CurrentPhotoUrl)"
+                             alt="Foto de perfil"
+                             class="property-agent-photo mx-auto mb-2"
+                             style="width: 120px; height: 120px;" />
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">Nombre completo</label>
+                        <input asp-for="FullName" class="form-control app-form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
+                        <input asp-for="PhoneNumber" class="form-control app-form-control" placeholder="809-555-1234" maxlength="12" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- Nueva foto -->
+                    <div class="mb-4">
+                        <label for="profileImage" class="form-label">Nueva foto (opcional)</label>
+                        <input type="file" id="profileImage" name="profileImage" class="form-control app-form-control"
+                               accept=".jpg,.jpeg,.png" onchange="previewFile(this);" />
+                        <div class="form-text">Formatos permitidos: .jpg, .jpeg, .png (Máx. 20 MB).</div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-controller="AgentHome" asp-action="Index" class="btn app-secondary-button">
+                            <i class="bi bi-arrow-left me-1"></i>Volver atrás
+                        </a>
+                        <button type="submit" class="btn app-primary-button">
+                            <i class="bi bi-check-lg me-1"></i>Guardar cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

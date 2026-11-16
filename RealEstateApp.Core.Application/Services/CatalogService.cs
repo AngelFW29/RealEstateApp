@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RealEstateApp.Core.Application.Dtos.Catalog;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.Catalog;
 using RealEstateApp.Core.Domain.Common;
@@ -138,6 +139,91 @@ namespace RealEstateApp.Core.Application.Services
         protected virtual Task PerformDeleteAsync(T entity, CancellationToken cancellationToken)
         {
             return _repository.DeleteAsync(entity);
+        }
+        public virtual async Task<List<CatalogItemDto>> GetAllApiAsync(CancellationToken cancellationToken = default)
+        {
+            var items = await _repository.GetAllAsync();
+            return _mapper.Map<List<CatalogItemDto>>(items);
+        }
+        public virtual async Task<Result<CatalogItemDto>> GetByIdApiAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity is null)
+            {
+                string articleDef = IsFemale ? "La" : "El";
+                string suffix = IsFemale ? "solicitada" : "solicitado";
+                return (Result<CatalogItemDto>)Result<CatalogItemDto>.NotFoundResult($"{articleDef} {SingularName} {suffix} no existe.");
+            }
+
+            return Result<CatalogItemDto>.Ok(_mapper.Map<CatalogItemDto>(entity));
+        }
+        public virtual async Task<Result<CatalogItemDto>> CreateApiAsync(CatalogRequestDto dto, CancellationToken cancellationToken = default)
+        {
+            dto.Name = dto.Name?.Trim() ?? string.Empty;
+            dto.Description = dto.Description?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Description))
+            {
+                return Result<CatalogItemDto>.Fail("Los datos enviados no son válidos.");
+            }
+
+            bool nameExists = await _repository.ExistsByNameAsync(dto.Name, null);
+            if (nameExists)
+            {
+                string article = IsFemale ? "una" : "un";
+                return Result<CatalogItemDto>.Fail($"Ya existe {article} {SingularName} registrado con este nombre.");
+            }
+
+            try
+            {
+                var entity = _mapper.Map<T>(dto);
+                await _repository.AddAsync(entity);
+                return Result<CatalogItemDto>.Ok(_mapper.Map<CatalogItemDto>(entity));
+            }
+            catch (Exception)
+            {
+                string article = IsFemale ? "una" : "un";
+                return Result<CatalogItemDto>.Fail($"Ya existe {article} {SingularName} registrado con este nombre.");
+            }
+        }
+        public virtual async Task<Result<CatalogItemDto>> UpdateApiAsync(int id, CatalogRequestDto dto, CancellationToken cancellationToken = default)
+        {
+            dto.Name = dto.Name?.Trim() ?? string.Empty;
+            dto.Description = dto.Description?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Description))
+            {
+                return Result<CatalogItemDto>.Fail("Los datos enviados no son válidos.");
+            }
+
+            var existingEntity = await _repository.GetByIdAsync(id);
+            if (existingEntity is null)
+            {
+                string articleDef = IsFemale ? "La" : "El";
+                string suffix = IsFemale ? "solicitada" : "solicitado";
+                return (Result<CatalogItemDto>)Result<CatalogItemDto>.NotFoundResult($"{articleDef} {SingularName} {suffix} no existe.");
+            }
+
+            bool nameExists = await _repository.ExistsByNameAsync(dto.Name, id);
+            if (nameExists)
+            {
+                string article = IsFemale ? "otra" : "otro";
+                return Result<CatalogItemDto>.Fail($"Ya existe {article} {SingularName} registrado con este nombre.");
+            }
+
+            try
+            {
+                existingEntity.Name = dto.Name;
+                existingEntity.Description = dto.Description;
+
+                await _repository.UpdateAsync(existingEntity);
+                return Result<CatalogItemDto>.Ok(_mapper.Map<CatalogItemDto>(existingEntity));
+            }
+            catch (Exception)
+            {
+                string article = IsFemale ? "otra" : "otro";
+                return Result<CatalogItemDto>.Fail($"Ya existe {article} {SingularName} registrado con este nombre.");
+            }
         }
     }
 }

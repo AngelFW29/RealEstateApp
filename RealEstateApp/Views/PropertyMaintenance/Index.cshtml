@@ -1,0 +1,60 @@
+﻿@model List<RealEstateApp.Core.Application.ViewModels.Property.PropertyListViewModel>
+@{ ViewData["Title"] = "Mantenimiento de Propiedades"; }
+
+<div class="property-detail-extra">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="app-section-title mb-0">Mantenimiento de Propiedades</h1>
+        <a asp-action="Create" class="btn app-btn-create">
+            <i class="bi bi-plus-lg me-1"></i>Crear propiedad
+        </a>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="property-detail-section text-center py-5">
+            <h5 class="justify-content-center mb-3"><i class="bi bi-house-x"></i>Sin propiedades</h5>
+            <p class="text-muted mb-0">No tiene propiedades disponibles registradas en este momento.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col">
+                    <div class="property-card h-100">
+                        @if (!string.IsNullOrEmpty(property.MainImageUrl))
+                        {
+                            <img src="@property.MainImageUrl" class="property-card-image" alt="Propiedad @property.Code" />
+                        }
+                        else
+                        {
+                            <div class="property-card-image-placeholder">
+                                <i class="bi bi-house"></i>
+                                <span>Sin imagen</span>
+                            </div>
+                        }
+                        <div class="property-card-body">
+                            <h5 class="property-card-title mb-1">@property.PropertyTypeName</h5>
+                            <p class="property-card-code mb-2">Código: <strong>@property.Code</strong></p>
+                            <p class="property-card-price mb-3">@property.Price.ToString("C", new System.Globalization.CultureInfo("es-DO"))</p>
+                            <div class="property-card-features mb-3">
+                                <span><i class="bi bi-door-open"></i>@property.Bedrooms hab.</span>
+                                <span><i class="bi bi-droplet"></i>@property.Bathrooms baños</span>
+                                <span><i class="bi bi-rulers"></i>@property.Size m²</span>
+                            </div>
+                        </div>
+                        <div class="property-card-footer">
+                            <a asp-action="Edit" asp-route-id="@property.Id" class="btn app-btn-edit w-100">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@property.Id" class="btn app-btn-delete w-100">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

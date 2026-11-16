@@ -1,78 +1,76 @@
-﻿@model List<RealEstateApp.Core.Application.ViewModels.Admin.AdminAgentListViewModel>
-@{
-    ViewData["Title"] = "Gestión de Agentes";
-}
+﻿@model RealEstateApp.Core.Application.ViewModels.Admin.AdminDashboardViewModel
+@{ ViewData["Title"] = "Dashboard del Administrador"; }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Mantenimiento de Agentes</h2>
+<div class="property-detail-extra">
+    <h1 class="app-section-title">Panel de Control del Administrador</h1>
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info text-center" role="alert">
-            No existen agentes registrados en este momento.
-        </div>
-    }
-    else
-    {
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo Electrónico</th>
-                            <th class="text-center">Propiedades</th>
-                            <th class="text-center">Estado</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var agent in Model)
-                        {
-                            <tr>
-                                <td>@agent.FirstName</td>
-                                <td>@agent.LastName</td>
-                                <td>@agent.Email</td>
-                                <td class="text-center">
-                                    <span class="badge bg-secondary">@agent.PropertyCount</span>
-                                </td>
-                                <td class="text-center">
-                                    @if (agent.IsActive)
-                                    {
-                                        <span class="badge bg-success">Activo</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">Inactivo</span>
-                                    }
-                                </td>
-                                <td class="text-end">
-                                    <a asp-action="ChangeStatus" asp-route-id="@agent.Id" class="btn btn-sm @(agent.IsActive ? "btn-outline-warning" : "btn-outline-success")">
-                                        @(agent.IsActive ? "Inactivar" : "Activar")
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@agent.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <div class="row g-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-house-door"></i>
+                    Propiedades
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Disponibles</span>
+                    <span class="badge bg-success fs-6">@Model.AvailableProperties</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Vendidas</span>
+                    <span class="badge bg-secondary fs-6">@Model.SoldProperties</span>
+                </div>
             </div>
         </div>
-    }
+
+        <div class="col-md-6 col-xl-3">
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-person-badge"></i>
+                    Agentes
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveAgents</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveAgents</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-people"></i>
+                    Clientes
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveClients</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveClients</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-code-slash"></i>
+                    Desarrolladores
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveDevelopers</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveDevelopers</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

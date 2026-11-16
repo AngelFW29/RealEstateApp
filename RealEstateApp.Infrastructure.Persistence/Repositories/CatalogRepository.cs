@@ -25,7 +25,6 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
 
         public virtual async Task<List<CatalogItemWithCount<T>>> GetAllWithCountAsync(CancellationToken cancellationToken = default)
         {
-            // Se implementará en clases derivadas para manejar el conteo específico por tipo
             var items = await _context.Set<T>().ToListAsync(cancellationToken);
             return items.Select(i => new CatalogItemWithCount<T>(i, 0)).ToList();
         }

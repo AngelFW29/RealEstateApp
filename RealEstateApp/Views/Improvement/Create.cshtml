@@ -1,0 +1,50 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Catalog.SaveCatalogViewModel
+@{
+    var isEdit = Model.Id != 0;
+    ViewData["Title"] = isEdit ? "Editar" : "Crear";
+}
+
+<div class="property-detail-extra">
+    <div class="row g-4">
+        <div class="col-lg-7 mx-auto">
+            <div class="property-detail-section">
+                <h5>
+                    <i class="bi @(isEdit ? "bi-pencil-square" : "bi-plus-circle")"></i>
+                    @ViewData["Title"] — @ViewContext.RouteData.Values["controller"]
+                </h5>
+
+                <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Nombre</label>
+                        <input asp-for="Name" class="form-control app-form-control" placeholder="Escriba el nombre..." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Descripción</label>
+                        <textarea asp-for="Description" class="form-control app-form-control" rows="3" placeholder="Escriba una descripción..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn app-secondary-button">
+                            <i class="bi bi-arrow-left me-1"></i>Volver atrás
+                        </a>
+                        <button type="submit" class="btn app-primary-button">
+                            <i class="bi bi-check-lg me-1"></i>@(isEdit ? "Guardar cambios" : "Crear")
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

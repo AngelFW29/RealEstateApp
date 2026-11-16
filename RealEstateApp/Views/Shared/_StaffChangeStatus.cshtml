@@ -1,25 +1,37 @@
 ﻿@model RealEstateApp.Core.Application.ViewModels.Staff.EditStaffUserViewModel
 @{
-    bool willBeActive = !ViewBag.IsActive; // O maneja la lógica según el estado actual
     string entityTypeName = ViewData["EntityTypeName"]?.ToString() ?? "usuario";
 }
 
-<div class="container mt-4" style="max-width: 500px;">
-    <h2>Cambiar Estado</h2>
-    <hr />
+<div class="property-detail-extra">
+    <div class="row g-4">
+        <div class="col-lg-6 mx-auto">
+            <div class="property-detail-section text-center">
+                <h5 class="justify-content-center">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Cambiar Estado
+                </h5>
 
-    <div class="alert alert-warning" role="alert">
-        ¿Está seguro que desea @(ViewBag.TargetActiveState ? "activar" : "inactivar") este @entityTypeName (<strong>@Model.UserName</strong>)?
-    </div>
+                <p class="lead text-muted mt-3">
+                    ¿Está seguro que desea @(ViewBag.TargetActiveState ? "activar" : "inactivar") este @entityTypeName?
+                </p>
+                <p class="fw-bold mb-4">@Model.UserName</p>
 
-    <form asp-action="ChangeStatusConfirmed" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.Id" />
-        <input type="hidden" name="isActive" value="@ViewBag.TargetActiveState.ToString().ToLower()" />
+                <form asp-action="ChangeStatus" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="isActive" value="@ViewBag.TargetActiveState.ToString().ToLower()" />
 
-        <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn @(ViewBag.TargetActiveState ? "btn-success" : "btn-warning")">Aceptar</button>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a asp-action="Index" class="btn app-secondary-button">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn @(ViewBag.TargetActiveState ? "app-primary-button" : "app-btn-delete")">
+                            <i class="bi bi-check-lg me-1"></i>Aceptar
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
 </div>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using RealEstateApp.Core.Application.Dtos.Property;
 
 namespace RealEstateApp.Core.Application
 {

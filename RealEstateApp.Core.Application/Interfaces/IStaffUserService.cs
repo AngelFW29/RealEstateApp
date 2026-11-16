@@ -13,4 +13,5 @@ namespace RealEstateApp.Core.Application.Interfaces
 
     public interface IAdministratorService : IStaffUserService { }
     public interface IDeveloperService : IStaffUserService { }
+    public interface IAgentService : IStaffUserService { }
 }

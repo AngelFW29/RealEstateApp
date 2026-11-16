@@ -44,18 +44,18 @@
 						else if (User.IsInRole("Agente"))
 						{
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentHome" asp-action="Index">Home del agente</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentHome" asp-action="Profile">Mi perfil</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentProperties" asp-action="Index">Mantenimiento de propiedades</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AgentProfile" asp-action="Index">Mi perfil</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="PropertyMaintenance" asp-action="Index">Mantenimiento de propiedades</a></li>
 						}
 						else if (User.IsInRole("Administrador"))
 						{
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AdminHome" asp-action="Index">Dashboard</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AdminHome" asp-action="Index">Agentes</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="AdminAgents" asp-action="Index">Agentes</a></li>
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="Administrator" asp-action="Index">Administradores</a></li>
 							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="Developer" asp-action="Index">Desarrolladores</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="PropertyTypes" asp-action="Index">Tipos de Propiedad</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="SaleTypes" asp-action="Index">Tipos de Venta</a></li>
-							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="Improvements" asp-action="Index">Mejoras</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="PropertyType" asp-action="Index">Tipos de Propiedad</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="SaleType" asp-action="Index">Tipos de Venta</a></li>
+							<li class="nav-item"><a class="nav-link app-nav-link" asp-controller="Improvement" asp-action="Index">Mejoras</a></li>
 						}
 					</ul>
 					@if (User.Identity.IsAuthenticated)

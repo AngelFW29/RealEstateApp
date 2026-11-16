@@ -26,6 +26,7 @@ namespace RealEstateApp.Infrastructure.Persistence
             services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
             services.AddScoped<IOfferRepository, OfferRepository>();
+            services.AddScoped(typeof(ICatalogRepository<>), typeof(CatalogRepository<>));
         }
 
         public static async Task RunPersistenceSeedAsync(this IServiceProvider serviceProvider)

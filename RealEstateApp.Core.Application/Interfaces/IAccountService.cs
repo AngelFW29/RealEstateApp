@@ -1,4 +1,5 @@
 ﻿using RealEstateApp.Core.Application.Dtos;
+using RealEstateApp.Core.Application.Dtos.Identity;
 using RealEstateApp.Core.Application.Dtos.User;
 
 namespace RealEstateApp.Core.Application.Interfaces
@@ -14,5 +15,8 @@ namespace RealEstateApp.Core.Application.Interfaces
         Task<bool> UserNameExistsAsync(string userName, string? excludeUserId = null, CancellationToken cancellationToken = default);
         Task<bool> CedulaExistsAsync(string cedula, string? excludeUserId = null, CancellationToken cancellationToken = default);
         Task<int> CountActiveByRoleAsync(string role, CancellationToken cancellationToken = default);
+
+        Task<List<RoleStatusCountDto>> CountUsersByRoleAndStatusAsync();
+        Task<(Result Result, string? OldPhotoUrl)> UpdateUserProfileAsync(string userId, string FullName, string phoneNumber, string? newPhotoUrl);
     }
 }

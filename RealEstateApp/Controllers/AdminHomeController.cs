@@ -9,17 +9,18 @@ namespace RealEstateApp.Controllers
     public class AdminHomeController : Controller
     {
         private readonly IAgentManagementService _agentManagementService;
-
-        public AdminHomeController(IAgentManagementService agentManagementService)
+        private readonly IAdminDashboardService _dashboardService;
+        public AdminHomeController(IAgentManagementService agentManagementService, IAdminDashboardService dashboardService)
         {
             _agentManagementService = agentManagementService;
+            _dashboardService = dashboardService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var agents = await _agentManagementService.GetAllAsync(cancellationToken);
-            return View(agents);
+            var vm = await _dashboardService.GetAsync(cancellationToken);
+            return View(vm);
         }
 
         [HttpGet("change-status/{id}")]

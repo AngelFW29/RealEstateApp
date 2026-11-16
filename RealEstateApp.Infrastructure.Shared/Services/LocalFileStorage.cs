@@ -11,8 +11,16 @@ namespace RealEstateApp.Infrastructure.Shared.Services
 
         public LocalFileStorage(IWebHostEnvironment env, IConfiguration config)
         {
-            _root = Path.GetFullPath(
-                Path.Combine(env.ContentRootPath, config["Storage:UploadsPath"] ?? "../Uploads"));
+            var customPath = config["FileStorage:RootPath"];
+            if (!string.IsNullOrWhiteSpace(customPath))
+            {
+                _root = Path.GetFullPath(customPath);
+            }
+            else
+            {
+                _root = Path.GetFullPath(
+                    Path.Combine(env.ContentRootPath, config["Storage:UploadsPath"] ?? "../Uploads"));
+            }
             Directory.CreateDirectory(_root);
         }
 

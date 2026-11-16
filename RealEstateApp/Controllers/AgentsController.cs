@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Exceptions;
 using RealEstateApp.Core.Application.Interfaces;
-using RealEstateApp.Core.Application.Services;
+using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.ViewModels.Agent;
 using RealEstateApp.Core.Application.ViewModels.Property;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RealEstateApp.Controllers
 {
