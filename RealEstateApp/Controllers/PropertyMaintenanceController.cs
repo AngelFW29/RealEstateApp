@@ -54,14 +54,13 @@ namespace RealEstateApp.Controllers
                 await _propertyService.PopulateFormAsync(vm, agentId);
                 return View(vm);
             }
-            //if (string.IsNullOrEmpty(agentId)) return Challenge();
 
             var imageDtos = new List<ImageUploadDto>();
             foreach (var img in images)
             {
                 if (img.Length > 0)
                 {
-                    using var ms = new MemoryStream();
+                    var ms = new MemoryStream();
                     await img.CopyToAsync(ms, cancellationToken);
                     imageDtos.Add(new ImageUploadDto
                     {

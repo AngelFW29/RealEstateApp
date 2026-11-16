@@ -241,6 +241,18 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Id)
                 .ToListAsync(cancellationToken);
         }
+        public async Task<List<Property>> GetByAgentIdWithDetailsAsync(string agentId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Properties
+                .AsNoTracking()
+                .Where(p => p.AgentId == agentId)
+                .Include(p => p.PropertyType)
+                .Include(p => p.SaleType)
+                .Include(p => p.Improvements)
+                    .ThenInclude(pi => pi.Improvement)
+                .OrderByDescending(p => p.Id)
+                .ToListAsync(cancellationToken);
+        }
 
     }
 }

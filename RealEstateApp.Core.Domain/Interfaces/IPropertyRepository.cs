@@ -19,5 +19,6 @@ namespace RealEstateApp.Core.Domain.Interfaces
         Task DeleteByAgentAsync(string agentId, CancellationToken cancellationToken = default);
         Task<(int Available, int Sold)> CountByStatusAsync();
         Task<List<Property>> GetAllByAgentIdAsync(string agentId, CancellationToken cancellationToken = default);
+        Task<List<Property>> GetByAgentIdWithDetailsAsync(string agentId, CancellationToken cancellationToken = default);
     }
 }

@@ -11,11 +11,19 @@ namespace RealEstateApp.Infrastructure.Shared.Services
 
         public LocalFileStorage(IWebHostEnvironment env, IConfiguration config)
         {
-            _root = Path.GetFullPath(
-                Path.Combine(env.ContentRootPath, config["Storage:UploadsPath"] ?? "../Uploads"));
+            var customPath = config["FileStorage:RootPath"];
+            if (!string.IsNullOrWhiteSpace(customPath))
+            {
+                _root = Path.GetFullPath(customPath);
+            }
+            else
+            {
+                _root = Path.GetFullPath(
+                    Path.Combine(env.ContentRootPath, config["Storage:UploadsPath"] ?? "../Uploads"));
+            }
             Directory.CreateDirectory(_root);
         }
-        
+
         public async Task<string> SaveAsync(Stream stream, string fileName, string folder, CancellationToken cancellationToken = default)
         {
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
@@ -29,7 +37,7 @@ namespace RealEstateApp.Infrastructure.Shared.Services
 
             return $"/uploads/{folder}/{name}".Replace("\\", "/");
         }
-        
+
         public async Task<string> SaveAsync(IFormFile file, string folder)
         {
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
@@ -39,7 +47,7 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             await using var fs = new FileStream(Path.Combine(dir, name), FileMode.Create);
             await file.CopyToAsync(fs);
 
-            return $"/uploads/{folder}/{name}";
+            return $"/uploads/{folder}/{name}".Replace("\\", "/");
         }
 
         public void Delete(string? relativePath)
