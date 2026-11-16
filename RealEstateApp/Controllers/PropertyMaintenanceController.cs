@@ -62,6 +62,7 @@ namespace RealEstateApp.Controllers
                 {
                     var ms = new MemoryStream();
                     await img.CopyToAsync(ms, cancellationToken);
+                    ms.Position = 0;
                     imageDtos.Add(new ImageUploadDto
                     {
                         FileName = img.FileName,
@@ -114,6 +115,7 @@ namespace RealEstateApp.Controllers
                 {
                     var ms = new MemoryStream();
                     await img.CopyToAsync(ms, cancellationToken);
+                    ms.Position = 0;
                     imageDtos.Add(new ImageUploadDto
                     {
                         FileName = img.FileName,

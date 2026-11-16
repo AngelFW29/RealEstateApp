@@ -293,7 +293,7 @@ namespace RealEstateApp.Core.Application.Services
             foreach (var img in images)
             {
                 string imageUrl = await _iFileStorage.SaveAsync(img.Content, Path.GetExtension(img.FileName), "properties");
-                propertyImages.Add(new PropertyImage { ImagePath = imageUrl, DisplayOrder = order++, Id = 0 });
+                propertyImages.Add(new PropertyImage { ImagePath = imageUrl, IsMain = order == 1, DisplayOrder = order++, Id = 0 });
             }
 
             var createdProperty = await _propertyRepository.CreateWithDetailsAsync(property, vm.ImprovementIds, propertyImages, cancellationToken);

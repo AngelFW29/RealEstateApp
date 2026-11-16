@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Domain.Entities;
 using RealEstateApp.Core.Domain.Interfaces;
@@ -7,8 +8,10 @@ namespace RealEstateApp.Core.Application.Services
 {
     public class SaleTypeService : CatalogService<SaleType>, ISaleTypeService
     {
-        public SaleTypeService(ICatalogRepository<SaleType> repository, IMapper mapper) : base(repository, mapper)
+        private readonly ISaleTypeRepository _saleTypeRepository;
+        public SaleTypeService(ICatalogRepository<SaleType> repository, ISaleTypeRepository saleTypeRepository, IMapper mapper) : base(repository, mapper)
         {
+            _saleTypeRepository = saleTypeRepository;
         }
 
         protected override string SingularNameMale => "tipo de venta";

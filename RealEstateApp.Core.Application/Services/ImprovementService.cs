@@ -7,8 +7,10 @@ namespace RealEstateApp.Core.Application.Services
 {
     public class ImprovementService : CatalogService<Improvement>, IPropertyImprovementService
     {
-        public ImprovementService(ICatalogRepository<Improvement> repository, IMapper mapper) : base(repository, mapper)
+        private readonly IImprovementRepository _improvementRepository;
+        public ImprovementService(ICatalogRepository<Improvement> repository, IImprovementRepository improvementRepository, IMapper mapper) : base(repository, mapper)
         {
+            _improvementRepository = improvementRepository;
         }
 
         protected override string SingularNameMale => "tipo de mejora";

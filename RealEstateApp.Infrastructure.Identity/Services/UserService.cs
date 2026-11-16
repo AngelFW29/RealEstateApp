@@ -94,7 +94,9 @@ namespace RealEstateApp.Infrastructure.Identity.Services
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email ?? string.Empty,
-                IsActive = u.IsActive
+                IsActive = u.IsActive,
+                UserName = u.UserName!,
+                Cedula = u.IdCard
             }).ToList();
         }
         public async Task<UserSummaryDto?> GetUserWithRoleAsync(string userId, string role, CancellationToken cancellationToken = default)
@@ -263,7 +265,7 @@ namespace RealEstateApp.Infrastructure.Identity.Services
             var users = _userManager.Users.ToList();
             var result = new List<RoleStatusCountDto>();
 
-            string[] roles = [Roles.Admin, Roles.Client, Roles.Agent, Roles.Developer];
+            string[] roles = ["Administrador", "Cliente", "Agente", "Desarrollador"];
 
             foreach (var role in roles)
             {

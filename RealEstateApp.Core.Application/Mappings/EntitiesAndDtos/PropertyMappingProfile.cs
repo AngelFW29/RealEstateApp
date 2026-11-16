@@ -11,7 +11,7 @@ namespace RealEstateApp.Core.Application.Mappings.EntitiesAndDtos
             CreateMap<Property, PropertyDto>()
                 .ForMember(d => d.PropertyTypeName, o => o.MapFrom(s => s.PropertyType != null ? s.PropertyType.Name : string.Empty))
                 .ForMember(d => d.SaleTypeName, o => o.MapFrom(s => s.SaleType != null ? s.SaleType.Name : string.Empty))
-                .ForMember(d => d.MainImagePath, o => o.MapFrom(s => s.Images.Where(i => i.IsMain).Select(i => i.ImagePath).FirstOrDefault()))
+                .ForMember(d => d.MainImagePath, o => o.MapFrom(s => s.Images.OrderBy(i => i.DisplayOrder).Select(i => i.ImagePath).FirstOrDefault()))
                 .ForMember(d => d.ImagePaths, o => o.MapFrom(s => s.Images.OrderBy(i => i.DisplayOrder).Select(i => i.ImagePath).ToList()))
                 .ForMember(d => d.ImprovementNames, o => o.MapFrom(s => s.Improvements.Where(pi => pi.Improvement != null).Select(pi => pi.Improvement!.Name).ToList()))
                 .ForMember(d => d.AgentName, o => o.Ignore())

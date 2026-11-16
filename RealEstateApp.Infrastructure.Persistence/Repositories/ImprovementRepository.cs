@@ -9,7 +9,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Repositories
     public class ImprovementRepository : GenericRepository<Improvement>, IImprovementRepository
     {
         public ImprovementRepository(RealEstateAppContext context) : base(context) { }
-        public async Task<bool> AnyExistsAsync( CancellationToken cancellationToken = default)
+        public async Task<bool> AnyExistsAsync(CancellationToken cancellationToken = default)
         {
             return await _context.Improvements.AnyAsync(cancellationToken);
 

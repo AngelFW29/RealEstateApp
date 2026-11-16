@@ -29,9 +29,9 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
-            var name = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName).ToLowerInvariant()}";
+            var name = $"{Guid.NewGuid():N}{Path.GetExtension(fileName).ToLowerInvariant()}";
             await using var fs = new FileStream(Path.Combine(dir, name), FileMode.Create);
-            await file.CopyToAsync(fs);
+            await stream.CopyToAsync(fs, cancellationToken);
 
             return $"/uploads/{folder}/{name}";
         }
@@ -41,12 +41,12 @@ namespace RealEstateApp.Infrastructure.Shared.Services
             var dir = Path.Combine(_root, folder.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(dir);
 
-            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
             var name = $"{Guid.NewGuid():N}{extension}";
             var fullPath = Path.Combine(dir, name);
 
             await using var fs = new FileStream(fullPath, FileMode.Create);
-            await stream.CopyToAsync(fs, cancellationToken);
+            await file.CopyToAsync(fs);
 
             return $"/uploads/{folder}/{name}".Replace("\\", "/");
         }

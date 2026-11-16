@@ -26,8 +26,6 @@ namespace RealEstateApp.Infrastructure.Persistence
             services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
             services.AddScoped<IOfferRepository, OfferRepository>();
-            services.AddScoped<IImprovementRepository, ImprovementRepository>();
-            services.AddScoped<ISaleTypeRepository, SaleTypeRepository>();
             services.AddScoped(typeof(ICatalogRepository<>), typeof(CatalogRepository<>));
         }
 

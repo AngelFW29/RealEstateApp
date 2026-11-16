@@ -37,7 +37,6 @@ namespace RealEstateApp.Controllers
             if (!result.Success)
             {
                 TempData["Error"] = result.FirstError;
-                //ModelState.AddModelError(string.Empty, result.FirstError ?? "Error al crear el registro.");
                 return View("Create", vm);
             }
 

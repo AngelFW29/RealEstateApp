@@ -28,19 +28,19 @@ namespace RealEstateApp.Core.Application.Services
 
             foreach (var item in roleStatusCounts)
             {
-                var role = item.Role?.Replace("[", "").Replace("]", "").Trim().ToLowerInvariant();
+                var role = item.Role;
 
-                if (role == "agent")
+                if (role == "Agente")
                 {
                     if (item.IsActive) vm.ActiveAgents = item.Count;
                     else vm.InactiveAgents = item.Count;
                 }
-                else if (role == "client")
+                else if (role == "Cliente")
                 {
                     if (item.IsActive) vm.ActiveClients = item.Count;
                     else vm.InactiveClients = item.Count;
                 }
-                else if (role == "developer")
+                else if (role == "Desarrollador")
                 {
                     if (item.IsActive) vm.ActiveDevelopers = item.Count;
                     else vm.InactiveDevelopers = item.Count;

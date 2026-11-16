@@ -19,7 +19,7 @@ builder.Services.AddApplicationLayer();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Home/AccessDenied";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 // validacion para el tamaño máximo de los archivos subidos

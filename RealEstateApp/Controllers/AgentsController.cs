@@ -7,10 +7,10 @@ using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.ViewModels.Agent;
 using RealEstateApp.Core.Application.ViewModels.Property;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RealEstateApp.Controllers
 {
-    [Authorize(Roles = "Agente,Administrador")]
     public class AgentsController : Controller
     {
         private readonly IUserService _userService;

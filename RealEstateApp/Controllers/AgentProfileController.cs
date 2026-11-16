@@ -65,7 +65,7 @@ namespace RealEstateApp.Controllers
                 return View(vm);
             }
 
-            IFormFile? imageDto = null;
+            IFormFile? imageDto = profileImage;
             var updateResult = await _profileService.UpdateAsync(userId, vm, imageDto, cancellationToken);
             if (!updateResult.Success)
             {

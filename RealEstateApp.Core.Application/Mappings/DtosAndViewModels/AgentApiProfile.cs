@@ -8,13 +8,13 @@ namespace RealEstateApp.Core.Application.Mappings.DtosAndViewModels
     {
         public AgentApiProfile()
         {
-            CreateMap<UserSummaryDto, AgentApiDto>()
+            /*CreateMap<UserSummaryDto, AgentApiDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src))
-                .ReverseMap();
+                .ReverseMap();*/
         }
     }
 }
