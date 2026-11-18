@@ -3,31 +3,40 @@
     ViewData["Title"] = Model.Id == 0 ? "Crear Tipo de Venta" : "Editar Tipo de Venta";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow border-0 p-4">
-                <h3 class="mb-3">@ViewData["Title"]</h3>
+<div class="property-detail-extra">
+    <div class="row g-4">
+        <div class="col-lg-7 mx-auto">
+            <div class="property-detail-section">
+                <h5>
+                    <i class="bi @(isEdit ? "bi-pencil-square" : "bi-plus-circle")"></i>
+                    @ViewData["Title"] — @ViewContext.RouteData.Values["controller"]
+                </h5>
 
-                <form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post">
+                <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
                     <div class="mb-3">
-                        <label asp-for="Name" class="form-label fw-bold">Nombre</label>
-                        <input asp-for="Name" class="form-control" placeholder="Escriba el nombre..." />
+                        <label asp-for="Name" class="form-label">Nombre</label>
+                        <input asp-for="Name" class="form-control app-form-control" placeholder="Escriba el nombre..." />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Description" class="form-label fw-bold">Descripción</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Escriba una descripción..."></textarea>
+                        <label asp-for="Description" class="form-label">Descripción</label>
+                        <textarea asp-for="Description" class="form-control app-form-control" rows="3" placeholder="Escriba una descripción..."></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn app-secondary-button">
+                            <i class="bi bi-arrow-left me-1"></i>Volver atrás
+                        </a>
+                        <button type="submit" class="btn app-primary-button">
+                            <i class="bi bi-check-lg me-1"></i>@(isEdit ? "Guardar cambios" : "Crear")
+                        </button>
                     </div>
                 </form>
             </div>

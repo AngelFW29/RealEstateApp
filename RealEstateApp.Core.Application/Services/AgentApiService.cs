@@ -3,9 +3,6 @@ using RealEstateApp.Core.Application.Dtos.Property;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Domain.Common.Enums;
 using RealEstateApp.Core.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealEstateApp.Core.Application.Services
 {
@@ -13,6 +10,8 @@ namespace RealEstateApp.Core.Application.Services
     {
         private readonly IAccountService _accountService;
         private readonly IPropertyRepository _propertyRepository;
+
+        private const string AgentRole = "Agente";
 
         public AgentApiService(IAccountService accountService, IPropertyRepository propertyRepository)
         {
@@ -22,7 +21,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<List<AgentApiDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var users = await _accountService.GetUsersByRoleAsync("Agente", cancellationToken);
+            var users = await _accountService.GetUsersByRoleAsync(AgentRole, cancellationToken);
             if (users == null || users.Count == 0) return new List<AgentApiDto>();
 
             var agentIds = users.Select(u => u.Id).ToList();
@@ -41,7 +40,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<Result<AgentApiDto>> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, AgentRole, cancellationToken);
             if (user == null)
             {
                 return Result<AgentApiDto>.Fail("El agente solicitado no existe.");
@@ -65,7 +64,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<Result<List<PropertyDto>>> GetAgentPropertiesAsync(string id, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, AgentRole, cancellationToken);
             if (user == null)
             {
                 return Result<List<PropertyDto>>.Fail("El agente solicitado no existe.");
@@ -91,12 +90,12 @@ namespace RealEstateApp.Core.Application.Services
                 Status = p.Status
             }).ToList();
 
-            return  Result<List<PropertyDto>>.Ok(propertyDtos);
+            return Result<List<PropertyDto>>.Ok(propertyDtos);
         }
 
         public async Task<Result> ChangeStatusAsync(string id, bool isActive, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, AgentRole, cancellationToken);
             if (user == null)
             {
                 return Result.Fail("El agente solicitado no existe.");

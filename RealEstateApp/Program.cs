@@ -9,6 +9,7 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Registrar MVC
 builder.Services.AddControllersWithViews();
 
 // Registrar capas
@@ -16,13 +17,15 @@ builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddIdentityForWebApp(builder.Configuration);
 builder.Services.AddSharedLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
+
+// Configurar cookie de Identity
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-// validacion para el tamaño máximo de los archivos subidos
+// Tamaño máximo de archivos subidos (20 MB)
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 20 * 1024 * 1024;
@@ -33,14 +36,13 @@ builder.Services.Configure<IISServerOptions>(options =>
     options.MaxRequestBodySize = 20 * 1024 * 1024;
 });
 
-builder.Services.AddControllersWithViews();
-
+// Registro explícito de IAccountService (necesario para StaffUserService y derivados)
 builder.Services.AddScoped<RealEstateApp.Core.Application.Interfaces.IAccountService,
                            RealEstateApp.Infrastructure.Identity.Services.UserService>();
 
 var app = builder.Build();
 
-// Configurar cultura es-DO para soporte de decimales y precios
+// Configurar cultura es-DO (decimales con punto, precios, etc.)
 var supportedCultures = new[] { new CultureInfo("es-DO") };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
@@ -56,6 +58,7 @@ await app.Services.RunIdentitySeedAsync();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// Servir /uploads desde Uploads/ (fuera de wwwroot)
 var uploadsPath = Path.GetFullPath(
     Path.Combine(builder.Environment.ContentRootPath,
                  builder.Configuration["Storage:UploadsPath"] ?? "../Uploads"));

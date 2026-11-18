@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using RealEstateApp.Core.Application.Interfaces;
 
 namespace RealEstateApi.Controllers
 {
-    public class SaleTypesController : Controller
+    public class SaleTypesController : CatalogApiControllerBase
     {
-        public IActionResult Index()
+        public SaleTypesController(ISaleTypeService saleTypeService) : base(saleTypeService)
         {
-            return View();
         }
+
+        protected override string NotFoundMessage => "El tipo de venta solicitado no existe.";
     }
 }

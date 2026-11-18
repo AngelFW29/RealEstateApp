@@ -61,7 +61,7 @@ namespace RealEstateApp.Core.Application.Services
 
             try
             {
-                var entity = _mapper.Map<T>(vm);
+                var entity = (T)_mapper.Map(vm, typeof(SaveCatalogViewModel), typeof(T));
                 await _repository.AddAsync(entity);
 
                 string articleDef = IsFemale ? "La" : "El";
@@ -176,7 +176,7 @@ namespace RealEstateApp.Core.Application.Services
 
             try
             {
-                var entity = _mapper.Map<T>(dto);
+                var entity = (T)_mapper.Map(dto, typeof(CatalogRequestDto), typeof(T));
                 await _repository.AddAsync(entity);
                 return Result<CatalogItemDto>.Ok(_mapper.Map<CatalogItemDto>(entity));
             }

@@ -13,22 +13,26 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-muted">Nombre</label>
-                    <p class="fs-5 text-dark">@Model.Name</p>
+                    <label class="text-muted small">Nombre</label>
+                    <p class="fs-5 fw-bold mb-0">@Model.Name</p>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-muted">Descripción</label>
-                    <p class="text-secondary">@Model.Description</p>
+                    <label class="text-muted small">Descripción</label>
+                    <p class="mb-0">@Model.Description</p>
                 </div>
 
                 <form asp-action="Delete" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn app-secondary-button">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>Sí, eliminar
+                        </button>
                     </div>
                 </form>
             </div>

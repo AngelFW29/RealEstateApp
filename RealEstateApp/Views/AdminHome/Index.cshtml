@@ -1,52 +1,74 @@
 ﻿@model RealEstateApp.Core.Application.ViewModels.Admin.AdminDashboardViewModel
-@{
-    ViewData["Title"] = "Dashboard del Administrador";
-}
+@{ ViewData["Title"] = "Dashboard del Administrador"; }
 
-<div class="container-fluid px-4 py-3">
-    <h2 class="mb-4">Panel de Control del Administrador</h2>
+<div class="property-detail-extra">
+    <h1 class="app-section-title">Panel de Control del Administrador</h1>
 
     <div class="row g-4">
         <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary fw-bold">Propiedades</h5>
-                    <hr />
-                    <p class="mb-2"><strong>Disponibles:</strong> <span class="badge bg-success fs-6">@Model.AvailableProperties</span></p>
-                    <p class="mb-0"><strong>Vendidas:</strong> <span class="badge bg-secondary fs-6">@Model.SoldProperties</span></p>
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-house-door"></i>
+                    Propiedades
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Disponibles</span>
+                    <span class="badge bg-success fs-6">@Model.AvailableProperties</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Vendidas</span>
+                    <span class="badge bg-secondary fs-6">@Model.SoldProperties</span>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-success fw-bold">Agentes</h5>
-                    <hr />
-                    <p class="mb-2"><strong>Activos:</strong> <span class="badge bg-success fs-6">@Model.ActiveAgents</span></p>
-                    <p class="mb-0"><strong>Inactivos:</strong> <span class="badge bg-danger fs-6">@Model.InactiveAgents</span></p>
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-person-badge"></i>
+                    Agentes
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveAgents</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveAgents</span>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-info fw-bold">Clientes</h5>
-                    <hr />
-                    <p class="mb-2"><strong>Activos:</strong> <span class="badge bg-success fs-6">@Model.ActiveClients</span></p>
-                    <p class="mb-0"><strong>Inactivos:</strong> <span class="badge bg-danger fs-6">@Model.InactiveClients</span></p>
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-people"></i>
+                    Clientes
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveClients</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveClients</span>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-warning fw-bold">Desarrolladores</h5>
-                    <hr />
-                    <p class="mb-2"><strong>Activos:</strong> <span class="badge bg-success fs-6">@Model.ActiveDevelopers</span></p>
-                    <p class="mb-0"><strong>Inactivos:</strong> <span class="badge bg-danger fs-6">@Model.InactiveDevelopers</span></p>
+            <div class="property-detail-section">
+                <h5 class="justify-content-start">
+                    <i class="bi bi-code-slash"></i>
+                    Desarrolladores
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Activos</span>
+                    <span class="badge bg-success fs-6">@Model.ActiveDevelopers</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Inactivos</span>
+                    <span class="badge bg-danger fs-6">@Model.InactiveDevelopers</span>
                 </div>
             </div>
         </div>

@@ -6,16 +6,18 @@
     var showPropertyCount = string.Equals(controllerName, "AdminAgents", StringComparison.OrdinalIgnoreCase);
 }
 
-<div class="container mt-4">
+<div class="property-detail-extra">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>@title</h2>
-        <a asp-action="@createAction" class="btn btn-primary">Crear nuevo</a>
+        <h1 class="app-section-title mb-0">@title</h1>
+        <a asp-action="@createAction" class="btn app-btn-create">
+            <i class="bi bi-plus-lg me-1"></i>Crear nuevo
+        </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
+    <div class="property-detail-section">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
                     <tr>
                         <th>Nombre</th>
                         <th>Apellido</th>
@@ -34,7 +36,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.FirstName</td>
+                            <td class="fw-bold">@item.FirstName</td>
                             <td>@item.LastName</td>
                             <td>@item.UserName</td>
                             <td>@(string.IsNullOrEmpty(item.Cedula) ? "N/A" : item.Cedula)</td>
@@ -52,15 +54,17 @@
                                 }
                                 else
                                 {
-                                    <span class="badge bg-danger">Inactivo</span>
+                                    <span class="badge bg-secondary">Inactivo</span>
                                 }
                             </td>
                             <td class="text-end">
                                 @if (!item.IsCurrentUser)
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
-                                    <a asp-action="ChangeStatus" asp-route-id="@item.Id" class="btn btn-sm @(item.IsActive ? "btn-outline-warning" : "btn-outline-success")">
-                                        @(item.IsActive ? "Inactivar" : "Activar")
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn app-btn-edit">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a asp-action="ChangeStatus" asp-route-id="@item.Id" class="btn app-btn-delete">
+                                        <i class="bi bi-power"></i> @(item.IsActive ? "Inactivar" : "Activar")
                                     </a>
                                 }
                                 else

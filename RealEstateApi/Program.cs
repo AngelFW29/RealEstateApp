@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using RealEstateApi.Middlewares;
 using RealEstateApp.Core.Application;
@@ -13,26 +12,35 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddPersistenceLayer(builder.Configuration);
-builder.Services.AddIdentityForWebApi(builder.Configuration);
-builder.Services.AddSharedLayer(builder.Configuration);
-builder.Services.AddApplicationLayer();
-// Añadir esta configuración de respuesta de validación justo debajo de builder.Services.AddControllers();
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
+        // Respuesta uniforme para errores de validación de modelo (400)
         options.InvalidModelStateResponseFactory = context =>
         {
+            var errors = context.ModelState
+                .Where(e => e.Value!.Errors.Count > 0)
+                .ToDictionary(
+                    e => e.Key,
+                    e => e.Value!.Errors.Select(x =>
+                        string.IsNullOrEmpty(x.ErrorMessage) ? "Valor no válido." : x.ErrorMessage).ToArray()
+                );
+
             return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new
             {
                 Status = 400,
-                Message = "El estado enviado no es válido."
+                Message = "Los datos enviados no son válidos.",
+                Errors = errors
             });
         };
     });
 
-// Registrar el servicio en DI
+builder.Services.AddPersistenceLayer(builder.Configuration);
+builder.Services.AddIdentityForWebApi(builder.Configuration);
+builder.Services.AddSharedLayer(builder.Configuration);
+builder.Services.AddApplicationLayer();
+
+// Registrar servicios específicos de la API
 builder.Services.AddScoped<IAgentApiService, AgentApiService>();
 
 // Configurar Swagger con Bearer Token

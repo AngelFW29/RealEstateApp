@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,8 +12,6 @@ using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Infrastructure.Identity.Contexts;
 using RealEstateApp.Infrastructure.Identity.Entities;
 using RealEstateApp.Infrastructure.Identity.Services;
-using System.Text;
-
 
 namespace RealEstateApp.Infrastructure.Identity
 {
@@ -70,6 +70,7 @@ namespace RealEstateApp.Infrastructure.Identity
                     }
                 };
             });
+
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 options.ValidationInterval = TimeSpan.FromMinutes(1);
@@ -111,6 +112,32 @@ namespace RealEstateApp.Infrastructure.Identity
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+                };
+
+                // Manejo uniforme de 401 (sin token / token inválido) y 403 (sin rol requerido)
+                opts.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async ctx =>
+                    {
+                        ctx.HandleResponse();
+                        ctx.Response.StatusCode = 401;
+                        ctx.Response.ContentType = "application/json";
+                        await ctx.Response.WriteAsJsonAsync(new
+                        {
+                            Status = 401,
+                            Message = "No está autorizado para acceder a este recurso."
+                        });
+                    },
+                    OnForbidden = async ctx =>
+                    {
+                        ctx.Response.StatusCode = 403;
+                        ctx.Response.ContentType = "application/json";
+                        await ctx.Response.WriteAsJsonAsync(new
+                        {
+                            Status = 403,
+                            Message = "Acceso denegado. No tiene permisos para realizar esta acción."
+                        });
+                    }
                 };
             });
 

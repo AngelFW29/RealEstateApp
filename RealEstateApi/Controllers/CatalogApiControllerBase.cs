@@ -21,7 +21,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator,Developer")]
+        [Authorize(Roles = "Administrador,Desarrollador")]
         [ProducesResponseType(typeof(List<CatalogItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -38,7 +38,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Developer")]
+        [Authorize(Roles = "Administrador,Desarrollador")]
         [ProducesResponseType(typeof(CatalogItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -57,7 +57,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(typeof(CatalogItemDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -80,7 +80,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(typeof(CatalogItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -104,7 +104,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
