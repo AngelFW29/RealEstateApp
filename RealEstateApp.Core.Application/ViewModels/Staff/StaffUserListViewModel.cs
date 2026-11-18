@@ -10,5 +10,6 @@
         public string Email { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool IsCurrentUser { get; set; }
+        public int PropertyCount { get; set; }
     }
 }

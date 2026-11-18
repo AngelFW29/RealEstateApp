@@ -11,10 +11,12 @@ namespace RealEstateApp.Controllers
     public class AdminAgentsController : Controller
     {
         private readonly IAgentService _agentService;
+        private readonly IAgentManagementService _agentManagementService;
 
-        public AdminAgentsController(IAgentService agentService)
+        public AdminAgentsController(IAgentService agentService, IAgentManagementService agentManagementService)
         {
             _agentService = agentService;
+            _agentManagementService = agentManagementService;
         }
 
         private string GetCurrentUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
@@ -22,7 +24,7 @@ namespace RealEstateApp.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var model = await _agentService.GetAllAsync(GetCurrentUserId(), cancellationToken);
+            var model = await _agentService.GetAllAsync(GetCurrentUserId() ,cancellationToken);
             return View(model);
         }
 
@@ -104,6 +106,32 @@ namespace RealEstateApp.Controllers
             }
 
             TempData["Success"] = result.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpGet("delete/{id}")]
+        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        {
+            var vm = await _agentManagementService.GetByIdAsync(id, cancellationToken);
+            if (vm == null)
+            {
+                TempData["Error"] = "El agente seleccionado no existe.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vm);
+        }
+
+        [HttpPost("delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id, CancellationToken cancellationToken)
+        {
+            var result = await _agentManagementService.DeleteAsync(id, cancellationToken);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.FirstError;
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Success"] = "El agente fue eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
     }

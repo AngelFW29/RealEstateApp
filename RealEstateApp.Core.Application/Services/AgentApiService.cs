@@ -22,7 +22,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<List<AgentApiDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var users = await _accountService.GetUsersByRoleAsync("[Agent]", cancellationToken);
+            var users = await _accountService.GetUsersByRoleAsync("Agente", cancellationToken);
             if (users == null || users.Count == 0) return new List<AgentApiDto>();
 
             var agentIds = users.Select(u => u.Id).ToList();
@@ -41,7 +41,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<Result<AgentApiDto>> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "[Agent]", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
             if (user == null)
             {
                 return Result<AgentApiDto>.Fail("El agente solicitado no existe.");
@@ -65,7 +65,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<Result<List<PropertyDto>>> GetAgentPropertiesAsync(string id, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "[Agent]", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
             if (user == null)
             {
                 return Result<List<PropertyDto>>.Fail("El agente solicitado no existe.");
@@ -96,7 +96,7 @@ namespace RealEstateApp.Core.Application.Services
 
         public async Task<Result> ChangeStatusAsync(string id, bool isActive, CancellationToken cancellationToken = default)
         {
-            var user = await _accountService.GetUserWithRoleAsync(id, "[Agent]", cancellationToken);
+            var user = await _accountService.GetUserWithRoleAsync(id, "Agente", cancellationToken);
             if (user == null)
             {
                 return Result.Fail("El agente solicitado no existe.");

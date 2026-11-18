@@ -8,16 +8,11 @@ namespace RealEstateApp.Core.Application.Services
 {
     public class SaleTypeService : CatalogService<SaleType>, ISaleTypeService
     {
-        private readonly ISaleTypeRepository _saleTypeRepository;
-        public SaleTypeService(ICatalogRepository<SaleType> repository, ISaleTypeRepository saleTypeRepository, IMapper mapper) : base(repository, mapper)
-        {
-            _saleTypeRepository = saleTypeRepository;
-        }
+        public SaleTypeService(ISaleTypeRepository saleTypeRepository, IMapper mapper)
+            : base(saleTypeRepository, mapper) { }
 
         protected override string SingularNameMale => "tipo de venta";
-
         protected override string SingularNameFemale => string.Empty;
-
         protected override bool IsFemale => false;
     }
 }

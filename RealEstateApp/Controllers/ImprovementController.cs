@@ -36,7 +36,7 @@ namespace RealEstateApp.Controllers
             var result = await _improvementService.CreateAsync(vm, cancellationToken);
             if (!result.Success)
             {
-                ModelState.AddModelError(string.Empty, result.Message ?? "Error al crear el registro.");
+                TempData["Error"] = result.FirstError;
                 return View("create", vm);
             }
 
@@ -62,7 +62,7 @@ namespace RealEstateApp.Controllers
             var result = await _improvementService.UpdateAsync(vm.Id, vm, cancellationToken);
             if (!result.Success)
             {
-                ModelState.AddModelError(string.Empty, result.Message ?? "Error al actualizar el registro.");
+                TempData["Error"] = result.FirstError;
                 return View("create", vm);
             }
 

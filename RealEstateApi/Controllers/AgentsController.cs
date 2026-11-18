@@ -22,7 +22,7 @@ namespace RealEstateApi.Controllers
         /// Obtiene la lista de todos los agentes registrados (activos e inactivos).
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "[Administrator],[Developer]")]
+        [Authorize(Roles = "Administrador,Desarrollador")]
         [ProducesResponseType(typeof(List<AgentApiDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -42,7 +42,7 @@ namespace RealEstateApi.Controllers
         /// Obtiene los detalles de un agente específico por su ID.
         /// </summary>
         [HttpGet("{id}")]
-        [Authorize(Roles = "[Administrator],[Developer]")]
+        [Authorize(Roles = "Administrador,Desarrollador")]
         [ProducesResponseType(typeof(AgentApiDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,7 +69,7 @@ namespace RealEstateApi.Controllers
         /// Obtiene todas las propiedades registradas por un agente específico.
         /// </summary>
         [HttpGet("{id}/properties")]
-        [Authorize(Roles = "[Administrator],[Developer]")]
+        [Authorize(Roles = "Administrador,Desarrollador")]
         [ProducesResponseType(typeof(List<PropertyDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -102,7 +102,7 @@ namespace RealEstateApi.Controllers
         /// Activa o inactiva el estado de un agente.
         /// </summary>
         [HttpPatch("{id}/status")]
-        [Authorize(Roles = "[Administrator]")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

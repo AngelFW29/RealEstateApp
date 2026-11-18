@@ -1,0 +1,18 @@
+﻿@model RealEstateApp.Core.Application.ViewModels.Admin.ConfirmAgentActionViewModel
+@{
+    ViewData["Title"] = "Eliminar Agente";
+}
+
+<div class="container mt-4">
+    <h2>Eliminar Agente</h2>
+    <hr />
+    <div class="alert alert-danger">
+        ¿Está seguro que desea eliminar al agente <strong>@Model.FullName</strong> y todas sus propiedades?
+        Esta acción no se puede deshacer.
+    </div>
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    </form>
+</div>
