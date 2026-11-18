@@ -163,7 +163,7 @@ namespace RealEstateApp.Infrastructure.Identity
             }
 
             // 2. Crear Usuarios
-            async Task SeedUser(string userName, string firstName, string lastName, string idCard, string role)
+            async Task SeedUser(string userName, string firstName, string lastName, string idCard, string phoneNumber, string role)
             {
                 if (await userManager.FindByNameAsync(userName) == null)
                 {
@@ -174,6 +174,8 @@ namespace RealEstateApp.Infrastructure.Identity
                         FirstName = firstName,
                         LastName = lastName,
                         IdCard = idCard,
+                        PhoneNumber = phoneNumber,
+                        PhotoPath = "/default-profile.png",
                         IsActive = true,
                         EmailConfirmed = true
                     };
@@ -181,11 +183,10 @@ namespace RealEstateApp.Infrastructure.Identity
                     if (result.Succeeded) await userManager.AddToRoleAsync(user, role);
                 }
             }
-
-            await SeedUser("admin", "Admin", "Sistema", "001-0000000-1", Roles.Admin);
-            await SeedUser("developer", "Dev", "Api", "001-0000000-2", Roles.Developer);
-            await SeedUser("agent", "Agente", "Demo", "001-0000000-3", Roles.Agent);
-            await SeedUser("client", "Cliente", "Demo", "001-0000000-4", Roles.Client);
+            await SeedUser("admin", "Admin", "Sistema", "001-0000000-1", "809-555-1001", Roles.Admin);
+            await SeedUser("developer", "Dev", "Api", "001-0000000-2", "829-222-1001", Roles.Developer);
+            await SeedUser("agent", "Agente", "Demo", "001-0000000-3", "849-777-1001", Roles.Agent);
+            await SeedUser("client", "Cliente", "Demo", "001-0000000-4", "809-666-1001", Roles.Client);
         }
     }
 }
