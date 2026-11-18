@@ -1,49 +1,67 @@
 ﻿@model IEnumerable<RealEstateApp.Core.Application.ViewModels.Catalog.CatalogListViewModel>
-@{ ViewData["Title"] = "Tipos de Venta"; }
+
+@{
+	ViewData["Title"] = "Tipos de Venta";
+}
 
 <div class="property-detail-extra">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Mantenimiento de tipos de Ventas</h2>
-        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Nuevo Registro</a>
-    </div>
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h1 class="app-section-title mb-0">Mantenimiento de tipos de Ventas</h1>
 
-    <div class="property-detail-section">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th class="text-center">Propiedades Asociadas</th>
-                        <th class="text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="fw-bold">@item.Name</td>
-                                <td>@item.Description</td>
-                                <td class="text-center"><span class="badge bg-secondary">@item.PropertyCount</span></td>
-                                <td class="text-end">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn app-btn-edit">
-                                        <i class="bi bi-pencil"></i> Editar
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn app-btn-delete">
-                                        <i class="bi bi-trash"></i> Eliminar
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr><td colspan="4" class="text-center py-4 text-muted">No hay tipos de propiedad registrados todavía.</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+		<a asp-action="Create" class="btn app-btn-create">
+			<i class="bi bi-plus-lg me-1"></i>Crear nuevo
+		</a>
+	</div>
+
+	<div class="property-detail-section">
+		<div class="table-responsive">
+			<table class="table table-hover align-middle mb-0">
+				<thead class="table-light">
+					<tr>
+						<th>Nombre</th>
+						<th>Descripción</th>
+						<th class="text-center">Propiedades Asociadas</th>
+						<th class="text-end">Acciones</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					@if (Model != null && Model.Any())
+					{
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td class="fw-bold">@item.Name</td>
+								<td>@item.Description</td>
+
+								<td class="text-center">
+									<span class="badge bg-secondary">@item.PropertyCount</span>
+								</td>
+
+								<td class="text-end">
+									<div class="d-flex justify-content-end gap-2 flex-wrap">
+										<a asp-action="Edit" asp-route-id="@item.Id" class="btn app-btn-edit">
+											<i class="bi bi-pencil"></i> Editar
+										</a>
+
+										<a asp-action="Delete" asp-route-id="@item.Id" class="btn app-btn-delete">
+											<i class="bi bi-trash"></i> Eliminar
+										</a>
+									</div>
+								</td>
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td colspan="4" class="text-center py-4 text-muted">
+								No hay tipos de propiedad registrados todavía.
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
