@@ -3,6 +3,9 @@
     <Project Path="RealEstateApp.Core.Application/RealEstateApp.Core.Application.csproj" />
     <Project Path="RealEstateApp.Core.Domain/RealEstateApp.Core.Domain.csproj" />
   </Folder>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="RealEstateApp.Infrastructure.Identity/RealEstateApp.Infrastructure.Identity.csproj" />
     <Project Path="RealEstateApp.Infrastructure.Persistence/RealEstateApp.Infrastructure.Persistence.csproj" />
